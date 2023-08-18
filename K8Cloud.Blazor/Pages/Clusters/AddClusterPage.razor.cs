@@ -1,6 +1,7 @@
 using AutoMapper;
 using K8Cloud.Blazor.Components.Clusters;
 using K8Cloud.Blazor.Extensions;
+using K8Cloud.Blazor.Utils;
 using K8Cloud.Contracts.Kubernetes.Data;
 using K8Cloud.Contracts.Kubernetes.RequestResponse;
 using k8s;
@@ -42,6 +43,25 @@ public partial class AddClusterPage
 
     private bool IsLoading { get; set; }
 
+    private Validator<AddCluster> Validator { get; set; }
+
+    public AddClusterPage()
+    {
+        Validator = new(() => ValidatePropertyClient, (model, propertyName) =>
+        {
+            var formData = (ClusterForm.ClusterFormData)model;
+            return new ValidateProperty<AddCluster>
+            {
+                Data = new AddCluster
+                {
+                    Id = Guid.Empty,
+                    Data = Mapper.Map<ClusterData>(formData)
+                },
+                PropertyName = $"Data.{propertyName}"
+            };
+        });
+    }
+
     protected override async Task OnInitializedAsync() { }
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
@@ -49,26 +69,6 @@ public partial class AddClusterPage
         if (Form.IsTouched)
             await context.AskToLeavePage(JSRuntime);
     }
-
-    public Func<object, string, Task<IEnumerable<string>>> ValidateValue =>
-        async (model, propertyName) =>
-        {
-            var formData = (ClusterForm.ClusterFormData)model;
-            var result = await ValidatePropertyClient.GetResponse<ValidatePropertyResponse>(
-                new ValidateProperty<AddCluster>
-                {
-                    Data = new AddCluster
-                    {
-                        Id = Guid.Empty,
-                        Data = Mapper.Map<ClusterData>(formData)
-                    },
-                    PropertyName = $"Data.{propertyName}"
-                }
-            );
-            if (result.Message.IsValid)
-                return Array.Empty<string>();
-            return result.Message.Errors.Select(e => e.Message);
-        };
 
     private void Save() { }
 

@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\K8Cloud.Contracts\K8Cloud.Contracts.csproj" />
-    <ProjectReference Include="..\K8Cloud.Shared\K8Cloud.Shared.csproj" />
+    <ProjectReference Include="..\..\Shared\K8Cloud.Contracts\K8Cloud.Contracts.csproj" />
+    <ProjectReference Include="..\..\Shared\K8Cloud.Shared\K8Cloud.Shared.csproj" />
   </ItemGroup>
 
 </Project>

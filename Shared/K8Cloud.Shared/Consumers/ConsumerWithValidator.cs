@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using FluentValidation.Results;
 using K8Cloud.Contracts.Kubernetes.Data;
 using K8Cloud.Contracts.Kubernetes.RequestResponse;
 using MassTransit;
@@ -19,26 +20,14 @@ public abstract class ConsumerWithValidator<T>
 
     public async Task Consume(ConsumeContext<T> context)
     {
-        var validationResult = await _validator
+        var result = await _validator
             .ValidateAsync(context.Message, context.CancellationToken)
             .ConfigureAwait(false);
-        if (!validationResult.IsValid)
+        if (!result.IsValid)
         {
             await context
                 .RespondAsync(
-                    new ValidationErrorResponse
-                    {
-                        Errors = validationResult.Errors
-                            .Select(
-                                x =>
-                                    new ValidationError
-                                    {
-                                        Message = x.ErrorMessage,
-                                        PropertyName = x.PropertyName
-                                    }
-                            )
-                            .ToArray()
-                    }
+                    new ValidationErrorResponse { Errors = ToContractErrors(result.Errors) }
                 )
                 .ConfigureAwait(false);
             return;
@@ -55,16 +44,7 @@ public abstract class ConsumerWithValidator<T>
                 new ValidateResponse
                 {
                     IsValid = result.IsValid,
-                    Errors = result.Errors
-                        .Select(
-                            x =>
-                                new ValidationError
-                                {
-                                    Message = x.ErrorMessage,
-                                    PropertyName = x.PropertyName
-                                }
-                        )
-                        .ToArray()
+                    Errors = ToContractErrors(result.Errors)
                 }
             )
             .ConfigureAwait(false);
@@ -85,20 +65,18 @@ public abstract class ConsumerWithValidator<T>
                 new ValidatePropertyResponse
                 {
                     IsValid = result.IsValid,
-                    Errors = result.Errors
-                        .Select(
-                            x =>
-                                new ValidationError
-                                {
-                                    Message = x.ErrorMessage,
-                                    PropertyName = x.PropertyName
-                                }
-                        )
-                        .ToArray()
+                    Errors = ToContractErrors(result.Errors)
                 }
             )
             .ConfigureAwait(false);
     }
 
     public abstract Task ConsumeValidated(ConsumeContext<T> context);
+
+    private ValidationError[] ToContractErrors(IEnumerable<ValidationFailure> errors) =>
+        errors
+            .Select(
+                x => new ValidationError { Message = x.ErrorMessage, PropertyName = x.PropertyName }
+            )
+            .ToArray();
 }

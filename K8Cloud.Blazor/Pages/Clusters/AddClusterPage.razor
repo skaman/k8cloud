@@ -6,7 +6,7 @@
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
 <PageHeader Title="@($"Add cluster")"
-            Description="Add a configuration for a kubernetes clusters."
+            Description="Add a configuration for a kubernetes cluster."
             BreadcrumbItems="BreadcrumbItems">
     <PageHeaderActions>
         <CancelButton Disabled="@IsLoading" Href="@($"/clusters")" />
@@ -18,7 +18,7 @@
     <MudCardContent>
         <MudForm @ref="@Form"
                  Model="@Data"
-                 Validation="@(ValidateValue)"
+                 Validation="@(Validator.ValidateValue)"
                  ReadOnly="@IsLoading">
             <ClusterForm Data="@Data" />
         </MudForm>
