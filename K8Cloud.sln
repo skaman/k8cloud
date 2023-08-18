@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Test", "K8Cloud.Test\K8Cloud.Test.csproj", "{A8EADD48-272D-408A-B97A-F85D6AC408F7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Kubernetes", "K8Cloud.Kubernetes\K8Cloud.Kubernetes.csproj", "{F8960DE6-6D6E-48B8-AAD6-8AA495ADF437}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Shared", "K8Cloud.Shared\K8Cloud.Shared.csproj", "{3FCF5D3F-81D1-42AD-9D5D-37A1A24957A3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Contracts", "K8Cloud.Contracts\K8Cloud.Contracts.csproj", "{84FC0068-55E8-408A-9C66-010D960AAC5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Blazor", "K8Cloud.Blazor\K8Cloud.Blazor.csproj", "{0D20867F-7B87-44B2-9CCD-5809A609FC18}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8EADD48-272D-408A-B97A-F85D6AC408F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8EADD48-272D-408A-B97A-F85D6AC408F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8EADD48-272D-408A-B97A-F85D6AC408F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8EADD48-272D-408A-B97A-F85D6AC408F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8960DE6-6D6E-48B8-AAD6-8AA495ADF437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8960DE6-6D6E-48B8-AAD6-8AA495ADF437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8960DE6-6D6E-48B8-AAD6-8AA495ADF437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8960DE6-6D6E-48B8-AAD6-8AA495ADF437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FCF5D3F-81D1-42AD-9D5D-37A1A24957A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FCF5D3F-81D1-42AD-9D5D-37A1A24957A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FCF5D3F-81D1-42AD-9D5D-37A1A24957A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FCF5D3F-81D1-42AD-9D5D-37A1A24957A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84FC0068-55E8-408A-9C66-010D960AAC5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84FC0068-55E8-408A-9C66-010D960AAC5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84FC0068-55E8-408A-9C66-010D960AAC5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84FC0068-55E8-408A-9C66-010D960AAC5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D20867F-7B87-44B2-9CCD-5809A609FC18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D20867F-7B87-44B2-9CCD-5809A609FC18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D20867F-7B87-44B2-9CCD-5809A609FC18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D20867F-7B87-44B2-9CCD-5809A609FC18}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F8782E0B-E3DF-4EEC-B816-E5CC37165B97}
+	EndGlobalSection
+EndGlobal

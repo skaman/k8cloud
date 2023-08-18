@@ -1,0 +1,35 @@
+﻿@using K8Cloud.Contracts.Kubernetes.Data;
+<MudStack>
+    <MudTextField @bind-Value="Data.ServerName"
+                  For="@(() => Data.ServerName)"
+                  Label="Server name" />
+
+    <MudTextField @bind-Value="Data.ServerAddress"
+                  For="@(() => Data.ServerAddress)"
+                  Label="Server address" />
+
+    <MudTextField @bind-Value="Data.ServerCertificateAuthorityData"
+                  For="@(() => Data.ServerCertificateAuthorityData)"
+                  Lines="8"
+                  Label="Server certificate authority data" />
+
+    <MudTextField @bind-Value="Data.UserName"
+                  For="@(() => Data.UserName)"
+                  Label="User name" />
+
+    <MudTextField @bind-Value="Data.UserCredentialsCertificateData"
+                  For="@(() => Data.UserCredentialsCertificateData)"
+                  Lines="8"
+                  Label="User credentials certificate data" />
+
+    <MudTextField @bind-Value="Data.UserCredentialsKeyData"
+                  For="@(() => Data.UserCredentialsKeyData)"
+                  Lines="4"
+                  Label="User credentials key data" />
+
+    <MudTextField @bind-Value="Data.Namespace"
+                  For="@(() => Data.Namespace)"
+                  Label="Namespace" />
+</MudStack>
+
+

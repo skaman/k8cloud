@@ -1,0 +1,40 @@
+﻿@if (string.IsNullOrEmpty(Tooltip))
+{
+    <MudChip Label="true"
+             Variant="GetVariant()"
+             Size="Size.Small"
+             Color="@Color">
+        @Text
+    </MudChip>
+}
+else
+{
+    <MudTooltip Text="@Tooltip"
+                Placement="Placement.Top">
+        <MudChip Label="true"
+                 Variant="GetVariant()"
+                 Size="Size.Small"
+                 Color="@Color">
+            @Text
+        </MudChip>
+    </MudTooltip>
+}
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Tooltip { get; set; }
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Default;
+
+    [Parameter]
+    public bool IsLight { get; set; }
+
+    private Variant GetVariant()
+    {
+        return IsLight ? Variant.Text : Variant.Outlined;
+    }
+}
