@@ -1,0 +1,44 @@
+﻿@using K8Cloud.Web.Components.Clusters
+
+@page "/clusters/{id:guid}/edit"
+@inject ISnackbar Snackbar
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<UseEditClusterQuery Id="@Id" Context="result">
+    <ChildContent>
+        <PageHeader Title="@($"Edit {result.ClusterById.ServerName}")"
+                    Description="Edit the configuration for your your kubernetes clusters."
+                    BreadcrumbItems="@GetBreadcrumbItems(result.ClusterById)">
+            <PageHeaderActions>
+                <CancelButton Disabled="@IsCancelDisabled" Href="@($"/clusters/{@Id}")" />
+                <SaveButton Disabled="@IsSaveDisabled" OnClick="Save" />
+            </PageHeaderActions>
+        </PageHeader>
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <EditForm EditContext="@EditContext">
+                    <DataAnnotationsValidator />
+                    <ClusterForm Data="@UpdateAndGetData(result.ClusterById)" />
+                </EditForm>
+            </MudCardContent>
+            <MudCardActions>
+                <MudFileUpload T="IBrowserFile" FilesChanged="LoadConfigurationFile">
+                    <ButtonTemplate>
+                        <MudButton HtmlTag="label"
+                                   Variant="Variant.Text"
+                                   StartIcon="@Icons.Material.TwoTone.FileOpen"
+                                   Color="Color.Default"
+                                   for="@context">
+                            Load from configuration file
+                        </MudButton>
+                    </ButtonTemplate>
+                </MudFileUpload>
+            </MudCardActions>
+        </MudCard>
+
+    </ChildContent>
+    <ErrorContent>
+        <ErrorMessage Errors="@result" />
+    </ErrorContent>
+</UseEditClusterQuery>

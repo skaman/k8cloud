@@ -1,0 +1,46 @@
+﻿@page "/clusters"
+@inject ISnackbar Snackbar
+
+<UseClustersQuery Context="result">
+    <ChildContent>
+        <PageHeader Title="Clusters"
+                    Description="Manage the connections with your kubernetes clusters."
+                    BreadcrumbItems="BreadcrumbItems">
+            <PageHeaderActions>
+                <AddButton Content="Add a cluster" Href="/clusters/create" />
+            </PageHeaderActions>
+        </PageHeader>
+
+        <MudCard Outlined="true">
+            <MudCardContent>
+                <MudTable Items="@result.Clusters"
+                          Elevation="0"
+                          Dense="true">
+                    <HeaderContent>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Address</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.ServerName</MudTd>
+                        <MudTd>@context.ServerAddress</MudTd>
+                        <MudTd>
+                            <!--
+                            <StatusChip Color="@(context.IsOperative ? Color.Success : Color.Error)"
+                                        Text="@(context.IsOperative ? "Operative" : "Not operative")" />
+                                        -->
+                        </MudTd>
+                        <MudTd Style="text-align:right">
+                            <MudIconButton Icon="@Icons.Material.TwoTone.FileOpen" Href="@($"/clusters/{context.Id}")"></MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.TwoTone.Edit" Href="@($"/clusters/{context.Id}/edit")"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudCardContent>
+        </MudCard>
+    </ChildContent>
+    <ErrorContent>
+        <ErrorMessage Errors="@result" />
+    </ErrorContent>
+</UseClustersQuery>

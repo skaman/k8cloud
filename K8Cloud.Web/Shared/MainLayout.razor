@@ -1,0 +1,108 @@
+﻿@inherits LayoutComponentBase
+
+<!-- theme manager -->
+<MudThemeManagerButton OnClick="@((e) => OpenThemeManager(true))" />
+<MudThemeManager Open="_themeManagerOpen" OpenChanged="OpenThemeManager" Theme="_themeManager" ThemeChanged="UpdateTheme" />
+
+<MudThemeProvider Theme="_themeManager.Theme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">K8Cloud.Web</MudText>
+        </MudDrawerHeader>
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-4 pt-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    // theme manager
+    private ThemeManagerTheme _themeManager = new ThemeManagerTheme();
+    public bool _themeManagerOpen = false;
+
+    void OpenThemeManager(bool value)
+    {
+        _themeManagerOpen = value;
+    }
+
+    void UpdateTheme(ThemeManagerTheme value)
+    {
+        _themeManager = value;
+        StateHasChanged();
+    }
+
+    private readonly MudTheme _theme = new MudTheme
+        {
+            Palette = new PaletteLight
+            {
+                //Black = "#1e2428",
+                Primary = "#005cc5",
+                Secondary = "#6f42c1",
+                Info = "#005cc5",
+                Success = "#005cc5",
+                Warning = "#e36209",
+                Error = "#d73a49",
+                //ActionDefault = "#959da5",
+                Background = "#f3f3f3",
+                BackgroundGrey = "#fafbfc",
+                Surface = "#f7f8fA",
+                DrawerBackground = "#f3f3f3",
+                AppbarBackground = "#005cc5"
+            },
+            PaletteDark = new PaletteDark
+            {
+                //Black = "#1e2428",
+                Primary = "#7986CB",
+                Secondary = "#b392f0",
+                Info = "#79b8ff",
+                Success = "#43A047",
+                Warning = "#ffab70",
+                Error = "#EF5350",
+                //ActionDefault = "#959da5",
+                Background = "#24292e",
+                BackgroundGrey = "#2f363d",
+                Surface = "#2f363d",
+                DrawerBackground = "#1e2428",
+                AppbarBackground = "#1e2428"
+            },
+            LayoutProperties = new LayoutProperties
+            {
+                DefaultBorderRadius = "0px",
+                DrawerWidthLeft = "260px",
+                DrawerWidthRight = "300px"
+            },
+            Typography = new Typography
+            {
+                Default = new Default
+                {
+                    FontFamily = new[] { "Segoe UI", "Helvetica", "Arial", "sans-serif" }
+                }
+            }
+        };
+
+    protected override void OnInitialized()
+    {
+        _themeManager.Theme = _theme;
+        StateHasChanged();
+    }
+}

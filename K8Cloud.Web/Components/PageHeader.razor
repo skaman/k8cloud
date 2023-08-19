@@ -1,0 +1,24 @@
+﻿<PageTitle>@Title</PageTitle>
+
+<MudBreadcrumbs Class="px-0" Items="BreadcrumbItems"></MudBreadcrumbs>
+
+<MudText Typo="Typo.h3" GutterBottom="true">@Title</MudText>
+
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Class="mb-8">
+    <MudText Typo="Typo.subtitle1">@Description</MudText>
+    <MudStack Row="true">@PageHeaderActions</MudStack>
+</MudStack>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Description { get; set; }
+
+    [Parameter]
+    public List<BreadcrumbItem>? BreadcrumbItems { get; set; }
+
+    [Parameter]
+    public RenderFragment? PageHeaderActions { get; set; }
+}

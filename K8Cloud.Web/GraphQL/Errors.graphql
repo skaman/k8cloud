@@ -1,0 +1,21 @@
+fragment ErrorFragment on Error {
+  message
+}
+
+fragment ValidationFragment on ValidationResult {
+  isValid
+  errors {
+    ...ValidationFailureFragment
+  }
+}
+
+fragment ValidationErrorFragment on ValidationError {
+  errors {
+  ...ValidationFailureFragment
+  }
+}
+
+fragment ValidationFailureFragment on ValidationFailure {
+  errorMessage
+  propertyName
+}

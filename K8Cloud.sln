@@ -17,6 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Shared", "Shared\K8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Contracts", "Shared\K8Cloud.Contracts\K8Cloud.Contracts.csproj", "{6CF44410-26FA-4067-8BD5-03055F66FAC1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Web", "K8Cloud.Web\K8Cloud.Web.csproj", "{5FA1D457-8C09-420F-85AD-BBCC8406726B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Server", "K8Cloud.Server\K8Cloud.Server.csproj", "{AED3547A-529A-4334-974F-63BED49EB4F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DFCB8C96-C077-4008-9881-7D2874BEF978}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +52,14 @@ Global
 		{6CF44410-26FA-4067-8BD5-03055F66FAC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CF44410-26FA-4067-8BD5-03055F66FAC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CF44410-26FA-4067-8BD5-03055F66FAC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FA1D457-8C09-420F-85AD-BBCC8406726B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FA1D457-8C09-420F-85AD-BBCC8406726B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FA1D457-8C09-420F-85AD-BBCC8406726B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FA1D457-8C09-420F-85AD-BBCC8406726B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AED3547A-529A-4334-974F-63BED49EB4F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED3547A-529A-4334-974F-63BED49EB4F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AED3547A-529A-4334-974F-63BED49EB4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AED3547A-529A-4334-974F-63BED49EB4F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

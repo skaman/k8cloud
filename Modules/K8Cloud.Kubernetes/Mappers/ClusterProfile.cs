@@ -13,6 +13,7 @@ internal class ClusterProfile : Profile
         CreateMap<ClusterData, Cluster>(MemberList.None);
 
         CreateMap<Cluster, ClusterData>();
+        CreateMap<Cluster, ClusterRecord>();
 
         CreateMap<Cluster, ClusterSummary>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ServerName))

@@ -1,0 +1,37 @@
+﻿@using K8Cloud.Web.Components.Clusters
+
+@page "/clusters/create"
+@inject ISnackbar Snackbar
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<PageHeader Title="@($"Add cluster")"
+            Description="Add a configuration for a kubernetes cluster."
+            BreadcrumbItems="BreadcrumbItems">
+    <PageHeaderActions>
+        <CancelButton Disabled="@IsCancelDisabled" Href="@($"/clusters")" />
+        <SaveButton Disabled="@IsSaveDisabled" OnClick="Save" />
+    </PageHeaderActions>
+</PageHeader>
+
+<MudCard Outlined="true">
+    <MudCardContent>
+        <EditForm EditContext="@EditContext">
+            <DataAnnotationsValidator />
+            <ClusterForm Data="@Data" />
+        </EditForm>
+    </MudCardContent>
+    <MudCardActions>
+        <MudFileUpload T="IBrowserFile" FilesChanged="LoadConfigurationFile">
+            <ButtonTemplate>
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Text"
+                           StartIcon="@Icons.Material.TwoTone.FileOpen"
+                           Color="Color.Default"
+                           for="@context">
+                    Load from configuration file
+                </MudButton>
+            </ButtonTemplate>
+        </MudFileUpload>
+    </MudCardActions>
+</MudCard>

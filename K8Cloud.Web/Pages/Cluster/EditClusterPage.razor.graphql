@@ -1,0 +1,35 @@
+query EditClusterQuery($id: UUID!) {
+  clusterById(id: $id) {
+    id
+    serverName
+    serverAddress
+    serverCertificateAuthorityData
+    userName
+    userCredentialsCertificateData
+    userCredentialsKeyData
+    namespace
+    version
+  }
+}
+
+mutation EditCluster($id: UUID!, $data: ClusterDataInput!, $version: String!) {
+  updateCluster(input: { clusterId: $id, data: $data, version: $version }) {
+    clusterRecord {
+      id
+    }
+    errors {
+      ...ErrorFragment
+      ...ValidationErrorFragment
+    }
+  }
+}
+
+mutation ValidateEditCluster($id: UUID!, $data: ClusterDataInput!) {
+  validateUpdateCluster(
+    input: { clusterId: $id, data: $data }
+  ) {
+    validationResult {
+      ...ValidationFragment
+    }
+  }
+}

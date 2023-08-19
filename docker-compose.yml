@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:15.4
+    restart: always
+    environment:
+      POSTGRES_USER: k8cloud
+      POSTGRES_PASSWORD: example
+    volumes:
+      - k8cloud-db-data:/var/lib/postgresql/data
+      - ./init-quartz.sql:/docker-entrypoint-initdb.d/init-quartz.sql
+    ports:
+      - 5432:5432
+
+  adminer:
+    image: adminer:4.8.1
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+    k8cloud-db-data:    

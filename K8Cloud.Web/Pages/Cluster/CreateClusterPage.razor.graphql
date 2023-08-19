@@ -1,0 +1,21 @@
+mutation CreateCluster($data: ClusterDataInput!) {
+  createCluster(input: { data: $data }) {
+    clusterRecord {
+      id
+    }
+    errors {
+      ...ErrorFragment
+      ...ValidationErrorFragment
+    }
+  }
+}
+
+mutation ValidateCreateCluster($data: ClusterDataInput!) {
+  validateCreateCluster(
+    input: { data: $data }
+  ) {
+    validationResult {
+      ...ValidationFragment
+    }
+  }
+}

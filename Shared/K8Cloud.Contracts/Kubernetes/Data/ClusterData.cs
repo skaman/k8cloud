@@ -10,3 +10,11 @@ public record ClusterData
     public required string UserCredentialsKeyData { get; init; }
     public required string Namespace { get; init; }
 }
+
+public record ClusterRecord : ClusterData
+{
+    public required Guid Id { get; init; }
+    public required DateTime CreatedAt { get; init; }
+    public required DateTime UpdatedAt { get; init; }
+    public required string Version { get; init; }
+}

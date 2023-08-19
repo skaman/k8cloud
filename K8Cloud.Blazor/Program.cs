@@ -62,13 +62,13 @@ builder.Services.AddKubernetesModule(builder.Configuration);
 builder.Services.AddK8CloudDatabase(
     optionsAction: options =>
     {
-        options.UseSqlite(
-            "Data Source=data.db",
-            options =>
-            {
-                options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-            }
-        );
+        //options.UseNpgsql(
+        //    "Data Source=data.db",
+        //    options =>
+        //    {
+        //        options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+        //    }
+        //);
     },
     modelBuilderAction: modelBuilder =>
     {
@@ -84,7 +84,7 @@ builder.Services.AddMudServices();
 
 var app = builder.Build();
 
-app.MigrateDatabase();
+app.Services.MigrateDatabase();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -61,6 +61,7 @@ public static class StartupExtensions
     {
         var clusterEntity = modelBuilder.Entity<Cluster>().ToTable("KubernetsClusters");
         clusterEntity.HasIndex(x => x.ServerName).IsUnique();
+        //clusterEntity.Property(p => p.Version).IsRowVersion();
 
         //var sendCommandState = modelBuilder.Entity<ClusterState>().ToTable("KubernetsClusters");
         //sendCommandState.HasKey(x => x.CorrelationId);

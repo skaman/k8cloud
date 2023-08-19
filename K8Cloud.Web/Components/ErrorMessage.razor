@@ -1,0 +1,26 @@
+﻿@using StrawberryShake;
+
+<MudStack Class="my-16">
+    <MudText Align="Align.Center" Typo="Typo.h2">Something went wrong ...</MudText>
+    @if (!string.IsNullOrEmpty(Message))
+    {
+        <MudText Align="Align.Center" Typo="Typo.subtitle1">@Message</MudText>
+    }
+    @if (Errors != null)
+    {
+        @foreach (var error in Errors)
+        {
+            <MudText Align="Align.Center" Typo="Typo.subtitle1">
+                <span>@error.Message</span>
+            </MudText>
+        }
+    }
+</MudStack>
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<IClientError>? Errors { get; set; }
+}

@@ -16,12 +16,12 @@
 
 <MudCard>
     <MudCardContent>
-        <MudForm @ref="@Form"
+        <ValidatedForm @ref="@Form"
                  Model="@Data"
                  Validation="@(Validator.ValidateValue)"
                  ReadOnly="@IsLoading">
             <ClusterForm Data="@Data" />
-        </MudForm>
+        </ValidatedForm>
     </MudCardContent>
     <MudCardActions>
         <MudFileUpload T="IBrowserFile" FilesChanged="LoadConfigurationFile">

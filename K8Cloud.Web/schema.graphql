@@ -1,0 +1,205 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  clusters(where: ClusterRecordFilterInput order: [ClusterRecordSortInput!]): [ClusterRecord!]!
+  clusterById(id: UUID!): ClusterRecord!
+}
+
+type Mutation {
+  createCluster(input: CreateClusterInput!): CreateClusterPayload!
+  validateCreateCluster(input: ValidateCreateClusterInput!): ValidateCreateClusterPayload!
+  updateCluster(input: UpdateClusterInput!): UpdateClusterPayload!
+  validateUpdateCluster(input: ValidateUpdateClusterInput!): ValidateUpdateClusterPayload!
+}
+
+input ClusterRecordFilterInput {
+  and: [ClusterRecordFilterInput!]
+  or: [ClusterRecordFilterInput!]
+  id: UuidOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
+  version: StringOperationFilterInput
+  serverName: StringOperationFilterInput
+  serverAddress: StringOperationFilterInput
+  serverCertificateAuthorityData: StringOperationFilterInput
+  userName: StringOperationFilterInput
+  userCredentialsCertificateData: StringOperationFilterInput
+  userCredentialsKeyData: StringOperationFilterInput
+  namespace: StringOperationFilterInput
+}
+
+input ClusterRecordSortInput {
+  id: SortEnumType
+  createdAt: SortEnumType
+  updatedAt: SortEnumType
+  version: SortEnumType
+  serverName: SortEnumType
+  serverAddress: SortEnumType
+  serverCertificateAuthorityData: SortEnumType
+  userName: SortEnumType
+  userCredentialsCertificateData: SortEnumType
+  userCredentialsKeyData: SortEnumType
+  namespace: SortEnumType
+}
+
+type ValidationError implements Error {
+  message: String!
+  errors: [ValidationFailure]
+}
+
+input UuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+interface Error {
+  message: String!
+}
+
+scalar UUID
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+type ClusterRecord {
+  id: UUID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  version: String!
+  serverName: String!
+  serverAddress: String!
+  serverCertificateAuthorityData: String!
+  userName: String!
+  userCredentialsCertificateData: String!
+  userCredentialsKeyData: String!
+  namespace: String!
+}
+
+input ClusterDataInput {
+  serverName: String!
+  serverAddress: String!
+  serverCertificateAuthorityData: String!
+  userName: String!
+  userCredentialsCertificateData: String!
+  userCredentialsKeyData: String!
+  namespace: String!
+}
+
+type ValidationResult {
+  toDictionary: [KeyValuePairOfStringAndString__!]
+  isValid: Boolean!
+  errors: [ValidationFailure]
+  ruleSetsExecuted: [String]
+}
+
+type ValidationFailure {
+  propertyName: String
+  errorMessage: String
+  severity: Severity!
+  errorCode: String
+  formattedMessagePlaceholderValues: [KeyValuePairOfStringAndObject!]
+}
+
+type KeyValuePairOfStringAndObject {
+  key: String!
+}
+
+enum Severity {
+  ERROR
+  WARNING
+  INFO
+}
+
+type KeyValuePairOfStringAndString__ {
+  key: String!
+  value: [String!]!
+}
+
+input CreateClusterInput {
+  data: ClusterDataInput!
+}
+
+union CreateClusterError = ValidationError
+
+type CreateClusterPayload {
+  clusterRecord: ClusterRecord
+  errors: [CreateClusterError!]
+}
+
+input ValidateCreateClusterInput {
+  data: ClusterDataInput!
+}
+
+type ValidateCreateClusterPayload {
+  validationResult: ValidationResult
+}
+
+input UpdateClusterInput {
+  clusterId: UUID!
+  data: ClusterDataInput!
+  version: String!
+}
+
+union UpdateClusterError = ValidationError
+
+type UpdateClusterPayload {
+  clusterRecord: ClusterRecord
+  errors: [UpdateClusterError!]
+}
+
+input ValidateUpdateClusterInput {
+  clusterId: UUID!
+  data: ClusterDataInput!
+}
+
+type ValidateUpdateClusterPayload {
+  validationResult: ValidationResult
+}

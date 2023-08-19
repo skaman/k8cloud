@@ -1,9 +1,7 @@
 ﻿using K8Cloud.Shared.Database;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using static MassTransit.MessageHeaders;
 
 namespace K8Cloud.Shared.Startup;
 
@@ -47,10 +45,15 @@ public static class StartupExtensions
         });
     }
 
-    public static void MigrateDatabase(this IApplicationBuilder applicationBuilder)
+    public static void MigrateDatabase(this IServiceProvider serviceProvider)
     {
-        var scope = applicationBuilder.ApplicationServices.CreateScope();
+        var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<K8CloudDbContext>();
         dbContext.Database.Migrate();
+    }
+
+    public static void AddSharedServices(this IServiceCollection services)
+    {
+        //services.AddSingleton<TrackingService>();
     }
 }
