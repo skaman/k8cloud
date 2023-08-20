@@ -1,0 +1,43 @@
+﻿<div class="d-flex mx-2" style="max-width:100px">
+    <K8PageSizeSelect Value="@PageSize" ValueChanged="UpdatePageSize">
+        <MudSelectItem Value="@(10)" />
+        <MudSelectItem Value="@(25)" />
+        <MudSelectItem Value="@(50)" />
+    </K8PageSizeSelect>
+</div>
+<MudSpacer />
+<K8Pagination Selected="@CurrentPage"
+              SelectedChanged="UpdateCurrentPage"
+              Count="GetPageCount(TotalCount)" />
+
+@code {
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageSizeChanged { get; set; }
+
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CurrentPageChanged { get; set; }
+
+    [Parameter]
+    public int TotalCount { get; set; }
+
+    private async Task UpdatePageSize(int value)
+    {
+        PageSize = value;
+        await PageSizeChanged.InvokeAsync(value);
+        StateHasChanged();
+    }
+
+    private Task UpdateCurrentPage(int value)
+    {
+        CurrentPage = value;
+        return CurrentPageChanged.InvokeAsync(value);
+    }
+
+    private int GetPageCount(int totalCount) => (int)Math.Ceiling(totalCount / (double)PageSize);
+}

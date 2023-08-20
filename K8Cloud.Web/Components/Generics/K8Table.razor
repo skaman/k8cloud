@@ -1,0 +1,14 @@
+﻿@typeparam T
+@inherits MudTable<T>
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    public K8Table()
+    {
+        Dense = true;
+        Elevation = 0;
+    }
+}

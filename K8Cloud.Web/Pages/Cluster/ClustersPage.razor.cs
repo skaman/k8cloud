@@ -24,8 +24,6 @@ public partial class ClustersPage
         SortServerAddress = new SortingContext.Item(SortingContext);
     }
 
-    private int GetPageCount(int totalCount) => (int)Math.Ceiling(totalCount / (double)PageSize);
-
     private IReadOnlyList<ClusterRecordSortInput> GetSortInput()
     {
         var sortInput = new ClusterRecordSortInput();

@@ -1,0 +1,15 @@
+﻿@inherits MudSelect<int>
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    public K8PageSizeSelect()
+    {
+        Margin = Margin.Dense;
+        Dense = true;
+        Variant = Variant.Outlined;
+        Label = "Page Size";
+    }
+}

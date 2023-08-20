@@ -1,0 +1,16 @@
+﻿@inherits MudPagination
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    public K8Pagination()
+    {
+        Rectangular = true;
+        Color = Color.Primary;
+        DisableElevation = true;
+        ShowFirstButton = true;
+        ShowLastButton = true;
+    }
+}

@@ -1,0 +1,19 @@
+﻿@inherits MudTextField<string>
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    public K8SearchField()
+    {
+        Margin = Margin.Dense;
+        Label = "Search";
+        Variant = Variant.Outlined;
+        DebounceInterval = 300;
+        Adornment = Adornment.End;
+        AdornmentIcon = Icons.Material.TwoTone.Search;
+        AdornmentColor = Color.Primary;
+        Clearable = true;
+    }
+}

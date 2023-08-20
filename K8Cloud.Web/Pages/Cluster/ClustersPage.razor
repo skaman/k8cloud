@@ -15,26 +15,12 @@
             </PageHeaderActions>
         </K8PageHeader>
 
-        <MudCard Outlined="true">
+        <K8Card>
             <MudCardHeader>
-                <MudSpacer />
-                <div style="width: 300px">
-                    <MudTextField Margin="Margin.Dense"
-                                  Label="Search"
-                                  Variant="Variant.Outlined"
-                                  DebounceInterval="500"
-                                  OnDebounceIntervalElapsed="OnSearch"
-                                  Adornment="Adornment.End"
-                                  AdornmentIcon="@Icons.Material.TwoTone.Search"
-                                  AdornmentColor="Color.Primary"
-                                  Clearable="true"
-                                  T="string" />
-                </div>
+                <K8TableSearch OnDebounceIntervalElapsed="OnSearch" />
             </MudCardHeader>
             <MudCardContent>
-                <MudTable Items="@result.Clusters!.Items"
-                          Elevation="0"
-                          Dense="true">
+                <K8Table Items="@result.Clusters!.Items">
                     <HeaderContent>
                         <MudTh>
                             <MudTableSortLabel @bind-SortDirection="@SortServerName.Direction"
@@ -61,34 +47,18 @@
                                         -->
                         </MudTd>
                         <MudTd Style="text-align:right">
-                            <MudIconButton Icon="@Icons.Material.TwoTone.FileOpen" Href="@($"/clusters/{context.Id}")"></MudIconButton>
-                            <MudIconButton Icon="@Icons.Material.TwoTone.Edit" Href="@($"/clusters/{context.Id}/edit")"></MudIconButton>
+                            <K8OpenIconButton Href="@($"/clusters/{context.Id}")" />
+                            <K8EditIconButton Href="@($"/clusters/{context.Id}/edit")" />
                         </MudTd>
                     </RowTemplate>
-                </MudTable>
+                </K8Table>
             </MudCardContent>
             <MudCardActions>
-                <div class="d-flex mx-2" style="max-width:100px">
-                    <MudSelect @bind-Value="PageSize"
-                               Margin="Margin.Dense"
-                               Dense="true"
-                               Variant="Variant.Outlined"
-                               Label="Page size">
-                        <MudSelectItem Value="@(10)" />
-                        <MudSelectItem Value="@(25)" />
-                        <MudSelectItem Value="@(50)" />
-                    </MudSelect>
-                </div>
-                <MudSpacer />
-                <MudPagination @bind-Selected="@CurrentPage"
-                               Rectangular="true"
-                               Color="Color.Primary"
-                               DisableElevation="true"
-                               Count="@GetPageCount(result.Clusters!.TotalCount)"
-                               ShowFirstButton="true"
-                               ShowLastButton="true" />
+                <K8TablePagination @bind-PageSize="PageSize"
+                                   @bind-CurrentPage="CurrentPage"
+                                   TotalCount="@result.Clusters!.TotalCount" />
             </MudCardActions>
-        </MudCard>
+        </K8Card>
     </ChildContent>
     <ErrorContent>
         <K8ErrorMessage Errors="@result" />
