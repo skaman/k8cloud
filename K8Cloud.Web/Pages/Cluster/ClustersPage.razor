@@ -1,24 +1,53 @@
 ﻿@page "/clusters"
 @inject ISnackbar Snackbar
 
-<UseClustersQuery Context="result">
+<UseClustersQuery Skip="@Skip"
+                  Take="@PageSize"
+                  Order="@GetSortInput()"
+                  Where="@GetFilterInput()"
+                  Context="result">
     <ChildContent>
-        <PageHeader Title="Clusters"
+        <K8PageHeader Title="Clusters"
                     Description="Manage the connections with your kubernetes clusters."
                     BreadcrumbItems="BreadcrumbItems">
             <PageHeaderActions>
-                <AddButton Content="Add a cluster" Href="/clusters/create" />
+                <K8AddButton Href="/clusters/create">Add a cluster</K8AddButton>
             </PageHeaderActions>
-        </PageHeader>
+        </K8PageHeader>
 
         <MudCard Outlined="true">
+            <MudCardHeader>
+                <MudSpacer />
+                <div style="width: 300px">
+                    <MudTextField Margin="Margin.Dense"
+                                  Label="Search"
+                                  Variant="Variant.Outlined"
+                                  DebounceInterval="500"
+                                  OnDebounceIntervalElapsed="OnSearch"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.TwoTone.Search"
+                                  AdornmentColor="Color.Primary"
+                                  Clearable="true"
+                                  T="string" />
+                </div>
+            </MudCardHeader>
             <MudCardContent>
-                <MudTable Items="@result.Clusters"
+                <MudTable Items="@result.Clusters!.Items"
                           Elevation="0"
                           Dense="true">
                     <HeaderContent>
-                        <MudTh>Name</MudTh>
-                        <MudTh>Address</MudTh>
+                        <MudTh>
+                            <MudTableSortLabel @bind-SortDirection="@SortServerName.Direction"
+                                               T="IClustersQuery_Clusters_Items">
+                                Name
+                            </MudTableSortLabel>
+                        </MudTh>
+                        <MudTh>
+                            <MudTableSortLabel @bind-SortDirection="@SortServerAddress.Direction"
+                                               T="IClustersQuery_Clusters_Items">
+                                Address
+                            </MudTableSortLabel>
+                        </MudTh>
                         <MudTh>Status</MudTh>
                         <MudTh></MudTh>
                     </HeaderContent>
@@ -38,9 +67,30 @@
                     </RowTemplate>
                 </MudTable>
             </MudCardContent>
+            <MudCardActions>
+                <div class="d-flex mx-2" style="max-width:100px">
+                    <MudSelect @bind-Value="PageSize"
+                               Margin="Margin.Dense"
+                               Dense="true"
+                               Variant="Variant.Outlined"
+                               Label="Page size">
+                        <MudSelectItem Value="@(10)" />
+                        <MudSelectItem Value="@(25)" />
+                        <MudSelectItem Value="@(50)" />
+                    </MudSelect>
+                </div>
+                <MudSpacer />
+                <MudPagination @bind-Selected="@CurrentPage"
+                               Rectangular="true"
+                               Color="Color.Primary"
+                               DisableElevation="true"
+                               Count="@GetPageCount(result.Clusters!.TotalCount)"
+                               ShowFirstButton="true"
+                               ShowLastButton="true" />
+            </MudCardActions>
         </MudCard>
     </ChildContent>
     <ErrorContent>
-        <ErrorMessage Errors="@result" />
+        <K8ErrorMessage Errors="@result" />
     </ErrorContent>
 </UseClustersQuery>

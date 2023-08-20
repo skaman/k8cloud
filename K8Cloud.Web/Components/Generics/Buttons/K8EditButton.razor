@@ -1,0 +1,14 @@
+﻿@inherits MudButton
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    public K8EditButton()
+    {
+        Variant = Variant.Text;
+        StartIcon = Icons.Material.TwoTone.Edit;
+        Color = Color.Default;
+    }
+}

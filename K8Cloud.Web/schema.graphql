@@ -4,7 +4,7 @@
 }
 
 type Query {
-  clusters(where: ClusterRecordFilterInput order: [ClusterRecordSortInput!]): [ClusterRecord!]!
+  clusters(skip: Int take: Int where: ClusterRecordFilterInput order: [ClusterRecordSortInput!]): ClustersCollectionSegment
   clusterById(id: UUID!): ClusterRecord!
 }
 
@@ -43,6 +43,15 @@ input ClusterRecordSortInput {
   userCredentialsCertificateData: SortEnumType
   userCredentialsKeyData: SortEnumType
   namespace: SortEnumType
+}
+
+"A segment of a collection."
+type ClustersCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [ClusterRecord!]
+  totalCount: Int!
 }
 
 type ValidationError implements Error {
@@ -93,6 +102,8 @@ input StringOperationFilterInput {
   nstartsWith: String
   endsWith: String
   nendsWith: String
+  eqInvariant: String
+  containsInvariant: String
 }
 
 enum SortEnumType {
@@ -100,14 +111,13 @@ enum SortEnumType {
   DESC
 }
 
-interface Error {
-  message: String!
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
 }
-
-scalar UUID
-
-"The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime
 
 type ClusterRecord {
   id: UUID!
@@ -121,6 +131,23 @@ type ClusterRecord {
   userCredentialsCertificateData: String!
   userCredentialsKeyData: String!
   namespace: String!
+}
+
+interface Error {
+  message: String!
+}
+
+scalar UUID
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+type ValidationFailure {
+  propertyName: String
+  errorMessage: String
+  severity: Severity!
+  errorCode: String
+  formattedMessagePlaceholderValues: [KeyValuePairOfStringAndObject!]
 }
 
 input ClusterDataInput {
@@ -140,12 +167,9 @@ type ValidationResult {
   ruleSetsExecuted: [String]
 }
 
-type ValidationFailure {
-  propertyName: String
-  errorMessage: String
-  severity: Severity!
-  errorCode: String
-  formattedMessagePlaceholderValues: [KeyValuePairOfStringAndObject!]
+type KeyValuePairOfStringAndString__ {
+  key: String!
+  value: [String!]!
 }
 
 type KeyValuePairOfStringAndObject {
@@ -156,11 +180,6 @@ enum Severity {
   ERROR
   WARNING
   INFO
-}
-
-type KeyValuePairOfStringAndString__ {
-  key: String!
-  value: [String!]!
 }
 
 input CreateClusterInput {

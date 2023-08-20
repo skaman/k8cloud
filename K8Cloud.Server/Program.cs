@@ -2,6 +2,7 @@ using HotChocolate.Data;
 using HotChocolate.Types.Pagination;
 using K8Cloud.Kubernetes.Startup;
 using K8Cloud.Shared.Database;
+using K8Cloud.Shared.GraphQL;
 using K8Cloud.Shared.Startup;
 using MassTransit;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
@@ -86,13 +87,13 @@ builder.Services
     .SetPagingOptions(
         new PagingOptions
         {
-            MaxPageSize = 100,
+            MaxPageSize = 50,
             DefaultPageSize = 10,
             IncludeTotalCount = true
         }
     )
     .RegisterDbContext<K8CloudDbContext>(DbContextKind.Resolver)
-    .AddFiltering()
+    .AddFiltering<ExtendedFilteringConvention>()
     .AddSorting()
     .AddKubernetesTypes();
 

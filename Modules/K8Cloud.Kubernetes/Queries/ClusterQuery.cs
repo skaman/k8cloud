@@ -13,6 +13,7 @@ namespace K8Cloud.Kubernetes.Queries;
 [QueryType]
 internal static class ClusterQuery
 {
+    [UseOffsetPaging]
     [UseFiltering]
     [UseSorting]
     public static IQueryable<ClusterRecord> GetClusters(

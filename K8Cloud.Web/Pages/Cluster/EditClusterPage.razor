@@ -7,14 +7,14 @@
 
 <UseEditClusterQuery Id="@Id" Context="result">
     <ChildContent>
-        <PageHeader Title="@($"Edit {result.ClusterById.ServerName}")"
+        <K8PageHeader Title="@($"Edit {result.ClusterById.ServerName}")"
                     Description="Edit the configuration for your your kubernetes clusters."
                     BreadcrumbItems="@GetBreadcrumbItems(result.ClusterById)">
             <PageHeaderActions>
-                <CancelButton Disabled="@IsCancelDisabled" Href="@($"/clusters/{@Id}")" />
-                <SaveButton Disabled="@IsSaveDisabled" OnClick="Save" />
+                <K8CancelButton Disabled="@IsCancelDisabled" Href="@($"/clusters/{@Id}")">Cancel</K8CancelButton>
+                <K8SaveButton Disabled="@IsSaveDisabled" OnClick="Save">Save</K8SaveButton>
             </PageHeaderActions>
-        </PageHeader>
+        </K8PageHeader>
         <MudCard Outlined="true">
             <MudCardContent>
                 <EditForm EditContext="@EditContext">
@@ -39,6 +39,6 @@
 
     </ChildContent>
     <ErrorContent>
-        <ErrorMessage Errors="@result" />
+        <K8ErrorMessage Errors="@result" />
     </ErrorContent>
 </UseEditClusterQuery>

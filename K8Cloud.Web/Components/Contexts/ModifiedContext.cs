@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Text.Json;
 
-namespace K8Cloud.Web.Components;
+namespace K8Cloud.Web.Components.Contexts;
 
 public sealed class ModifiedEventArgs : EventArgs
 {

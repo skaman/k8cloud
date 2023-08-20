@@ -1,0 +1,14 @@
+﻿@inherits MudButton
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+    public K8DeleteButton()
+    {
+        Variant = Variant.Text;
+        StartIcon = Icons.Material.TwoTone.Delete;
+        Color = Color.Error;
+    }
+}

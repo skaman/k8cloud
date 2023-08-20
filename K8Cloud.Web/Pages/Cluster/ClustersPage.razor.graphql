@@ -1,7 +1,10 @@
-query ClustersQuery {
-  clusters {
-    id
-    serverName
-    serverAddress
+query ClustersQuery($skip: Int!, $take: Int!, $order: [ClusterRecordSortInput!], $where: ClusterRecordFilterInput) {
+  clusters(skip: $skip take: $take, order: $order, where: $where) {
+    items {
+      id
+      serverName
+      serverAddress
+    }
+    totalCount
   }
 }

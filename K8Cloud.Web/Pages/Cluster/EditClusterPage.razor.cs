@@ -1,5 +1,4 @@
 using AutoMapper;
-using K8Cloud.Web.Components;
 using K8Cloud.Web.Components.Clusters;
 using K8Cloud.Web.Extensions;
 using k8s.KubeConfigModels;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using MudBlazor;
 using StrawberryShake;
+using K8Cloud.Web.Components.Contexts;
 
 namespace K8Cloud.Web.Pages.Cluster;
 

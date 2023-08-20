@@ -5,14 +5,14 @@
 
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
-<PageHeader Title="@($"Add cluster")"
+<K8PageHeader Title="@($"Add cluster")"
             Description="Add a configuration for a kubernetes cluster."
             BreadcrumbItems="BreadcrumbItems">
     <PageHeaderActions>
-        <CancelButton Disabled="@IsCancelDisabled" Href="@($"/clusters")" />
-        <SaveButton Disabled="@IsSaveDisabled" OnClick="Save" />
+        <K8CancelButton Disabled="@IsCancelDisabled" Href="@($"/clusters")">Cancel</K8CancelButton>
+        <K8SaveButton Disabled="@IsSaveDisabled" OnClick="Save">Save</K8SaveButton>
     </PageHeaderActions>
-</PageHeader>
+</K8PageHeader>
 
 <MudCard Outlined="true">
     <MudCardContent>

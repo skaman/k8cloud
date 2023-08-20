@@ -3,7 +3,7 @@ using K8Cloud.Web.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
-namespace K8Cloud.Web.Components;
+namespace K8Cloud.Web.Components.Contexts;
 
 public sealed class ValidationContext
 {
@@ -83,7 +83,7 @@ public sealed class ValidationContext
         if (
             _validationStatus.TryGetValue(e.FieldIdentifier.FieldName, out var value)
             && (
-                (value == null && modelValue == null) || (value != null && value.Equals(modelValue))
+                value == null && modelValue == null || value != null && value.Equals(modelValue)
             )
         )
         {
