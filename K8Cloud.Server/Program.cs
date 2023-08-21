@@ -38,20 +38,27 @@ builder.Services.AddAutoMapper(config =>
 // Add the MassTransit services.
 builder.Services.AddMassTransit(busConfigurator =>
 {
+    var schedulerEndpoint = new Uri("queue:scheduler");
+    busConfigurator.AddMessageScheduler(schedulerEndpoint);
+
     busConfigurator.AddDelayedMessageScheduler();
     busConfigurator.AddPublishMessageScheduler();
 
     busConfigurator.AddQuartz();
+    busConfigurator.AddQuartzConsumers();
 
-    busConfigurator.AddInMemoryInboxOutbox();
+    busConfigurator.AddEntityFrameworkOutbox<K8CloudDbContext>(options =>
+    {
+        options.UsePostgres();
+        options.UseBusOutbox();
+    });
 
     busConfigurator.UsingInMemory(
         (context, cfg) =>
         {
             cfg.UseDelayedMessageScheduler();
             cfg.UsePublishMessageScheduler();
-
-            cfg.UseInMemoryOutbox();
+            cfg.UseMessageScheduler(schedulerEndpoint);
 
             cfg.ConfigureEndpoints(context);
         }
@@ -83,6 +90,11 @@ builder.Services.AddK8CloudDatabase(
 );
 builder.Services
     .AddGraphQLServer()
+    .ModifyOptions(o =>
+    {
+        o.EnableDefer = true;
+        o.EnableStream = true;
+    })
     .AddMutationConventions()
     .SetPagingOptions(
         new PagingOptions

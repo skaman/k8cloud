@@ -22,3 +22,9 @@ public record NodeInfo
     public string? PodCIDR { get; init; }
     public required string[] PodCIDRs { get; init; }
 }
+
+public record ClusterStatus
+{
+    public required bool IsOperative { get; init; }
+    public required NodeInfo[] Nodes { get; init; }
+}

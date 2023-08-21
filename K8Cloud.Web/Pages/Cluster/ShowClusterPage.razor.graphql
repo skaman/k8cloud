@@ -1,0 +1,54 @@
+query ShowClusterQuery($id: UUID!) {
+  clusterById(id: $id) {
+    id
+    serverName
+    serverAddress
+    version
+    ... ShowClusterStatusFragment
+  }
+}
+
+fragment ShowClusterStatusFragment on ClusterRecord {
+  status {
+    isOperative
+    nodes {
+      ... ShowClusterNodeInfoFragment
+    }
+  }
+}
+
+fragment ShowClusterNodeInfoFragment on NodeInfo {
+  id
+  name
+  ipAddresses
+  roles
+  conditions {
+    ... ShowClusterNodeConditionFragment
+  }
+  architecture
+  bootID
+  containerRuntimeVersion
+  kernelVersion
+  kubeProxyVersion
+  kubeletVersion
+  machineID
+  operatingSystem
+  osImage
+  systemUUID
+  podCIDR
+  podCIDRs
+}
+
+fragment ShowClusterNodeConditionFragment on NodeCondition {
+  type
+  isOperative
+  message
+}
+
+mutation DeleteCluster($id: UUID!) {
+  deleteCluster(input: { clusterId: $id }) {
+    clusterRecord {
+      id
+    }
+  }
+}

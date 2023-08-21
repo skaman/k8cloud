@@ -7,7 +7,7 @@
     </TitleContent>
     <DialogContent>
         <MudText>Insert the resource name '@(ResourceName)' to confirm the operation.</MudText>
-        <MudTextField Value="@InsertedResourceName" Immediate="true" TextChanged="InsertedResourceNameChanged" />
+        <MudTextField Variant="Variant.Outlined" Margin="Margin.Dense" Value="@InsertedResourceName" Immediate="true" TextChanged="InsertedResourceNameChanged" />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>

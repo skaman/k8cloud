@@ -5,6 +5,7 @@
                   Take="@PageSize"
                   Order="@GetSortInput()"
                   Where="@GetFilterInput()"
+                  Strategy="ExecutionStrategy.CacheAndNetwork"
                   Context="result">
     <ChildContent>
         <K8PageHeader Title="Clusters"
@@ -41,10 +42,8 @@
                         <MudTd>@context.ServerName</MudTd>
                         <MudTd>@context.ServerAddress</MudTd>
                         <MudTd>
-                            <!--
-                            <StatusChip Color="@(context.IsOperative ? Color.Success : Color.Error)"
-                                        Text="@(context.IsOperative ? "Operative" : "Not operative")" />
-                                        -->
+                            <K8StatusChip Color="@GetStatusColor(context.Status?.IsOperative)"
+                                          Text="@GetStatusLabel(context.Status?.IsOperative)" />
                         </MudTd>
                         <MudTd Style="text-align:right">
                             <K8OpenIconButton Href="@($"/clusters/{context.Id}")" />

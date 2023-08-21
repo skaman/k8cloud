@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\Shared\K8Cloud.Shared\K8Cloud.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Consumers\" />
+  </ItemGroup>
+
 </Project>

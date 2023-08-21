@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using K8Cloud.Kubernetes.Consumers;
 using K8Cloud.Kubernetes.Entities;
 using K8Cloud.Kubernetes.Mappers;
 using K8Cloud.Kubernetes.Services;
@@ -26,8 +25,10 @@ public static class StartupExtensions
         IConfiguration configuration
     )
     {
-        services.AddScoped<AddClusterValidator>();
+        //services.AddScoped<AddClusterValidator>();
         services.AddScoped<ClusterDataValidator>();
+
+        services.AddScoped<ClusterService>();
 
         services.AddSingleton<KubernetesClientsService>();
     }
@@ -38,11 +39,11 @@ public static class StartupExtensions
     /// <param name="busConfigurator">MassTransit bus configurator.</param>
     public static void ConfigureKubernetesBus(this IBusRegistrationConfigurator busConfigurator)
     {
-        busConfigurator.AddConsumer<AddClusterConsumer>();
-        busConfigurator.AddConsumer<ListNodesConsumer>();
-        busConfigurator.AddConsumer<ListClusterSummariesConsumer>();
-        busConfigurator.AddConsumer<GetClusterSummaryConsumer>();
-        busConfigurator.AddConsumer<GetClusterDataConsumer>();
+        //busConfigurator.AddConsumer<AddClusterConsumer>();
+        //busConfigurator.AddConsumer<ListNodesConsumer>();
+        //busConfigurator.AddConsumer<ListClusterSummariesConsumer>();
+        //busConfigurator.AddConsumer<GetClusterSummaryConsumer>();
+        //busConfigurator.AddConsumer<GetClusterDataConsumer>();
         //busConfigurator
         //    .AddSagaStateMachine<ClusterStateMachine, ClusterState>()
         //    .EntityFrameworkRepository(r =>

@@ -1,7 +1,7 @@
 ﻿@if (string.IsNullOrEmpty(Tooltip))
 {
     <MudChip Label="true"
-             Variant="GetVariant()"
+             Variant="@Variant"
              Size="Size.Small"
              Color="@Color">
         @Text
@@ -12,7 +12,7 @@ else
     <MudTooltip Text="@Tooltip"
                 Placement="Placement.Top">
         <MudChip Label="true"
-                 Variant="GetVariant()"
+                 Variant="@Variant"
                  Size="Size.Small"
                  Color="@Color">
             @Text
@@ -31,10 +31,5 @@ else
     public Color Color { get; set; } = Color.Default;
 
     [Parameter]
-    public bool IsLight { get; set; }
-
-    private Variant GetVariant()
-    {
-        return IsLight ? Variant.Text : Variant.Outlined;
-    }
+    public Variant Variant { get; set; } = Variant.Outlined;
 }

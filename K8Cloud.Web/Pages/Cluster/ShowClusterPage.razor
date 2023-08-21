@@ -1,0 +1,114 @@
+﻿@page "/clusters/{id:guid}"
+@inject ISnackbar Snackbar
+
+<UseShowClusterQuery Id="@Id" Strategy="ExecutionStrategy.CacheAndNetwork" Context="result">
+    <ChildContent>
+        <K8PageHeader Title="@result.ClusterById.ServerName"
+                      Description="Show the nodes and related status for your kubernetes clusters."
+                      BreadcrumbItems="@GetBreadcrumbItems(result.ClusterById)">
+            <PageHeaderActions>
+                <K8EditButton Disabled="@IsLoading" Href="@($"/clusters/{@Id}/edit")">Edit</K8EditButton>
+                <K8DeleteButton Disabled="@IsLoading" OnClick="@(() => Delete(result.ClusterById))">Delete</K8DeleteButton>
+                <K8StatusChip Color="@GetStatusColor(result.ClusterById.Status?.IsOperative)"
+                              Text="@GetStatusLabel(result.ClusterById.Status?.IsOperative)"
+                              Variant="Variant.Filled" />
+            </PageHeaderActions>
+        </K8PageHeader>
+        <MudGrid>
+            @foreach (var node in @result.ClusterById.Status?.Nodes ?? new List<IShowClusterQuery_ClusterById_Status_Nodes>())
+            {
+                <MudItem xs="12" md="6">
+                    <MudCard Outlined="true">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.h6">@node.Name</MudText>
+                                <MudText Typo="Typo.caption">@string.Join(", ", node.IpAddresses)</MudText>
+                            </CardHeaderContent>
+                            <CardHeaderActions>
+                                <MudStack Row="true" Class="my-2">
+                                    @foreach(var role in node.Roles) {
+                                        <K8RoleChip Text="@role" />
+                                    }
+                                    <K8StatusChip Text="@GetReadyValue(node)"
+                                                  Tooltip="@GetConditionToolTip(node, "Ready")"
+                                                  Color="@GetConditionColor(node, "Ready")" />
+                                </MudStack>
+                            </CardHeaderActions>
+                        </MudCardHeader>
+                        <MudCardContent Class="pt-0">
+                            <MudStack Row="true" Justify="Justify.FlexStart">
+                                <K8StatusChip Text="Network"
+                                              Tooltip="@GetConditionToolTip(node, "NetworkUnavailable")"
+                                              Color="@GetConditionColor(node, "NetworkUnavailable")"
+                                              Variant="Variant.Text" />
+
+                                <K8StatusChip Text="Memory"
+                                              Tooltip="@GetConditionToolTip(node, "MemoryPressure")"
+                                              Color="@GetConditionColor(node, "MemoryPressure")"
+                                              Variant="Variant.Text" />
+
+                                <K8StatusChip Text="Disk"
+                                              Tooltip="@GetConditionToolTip(node, "DiskPressure")"
+                                              Color="@GetConditionColor(node, "DiskPressure")"
+                                              Variant="Variant.Text" />
+
+                                <K8StatusChip Text="PIDs"
+                                              Tooltip="@GetConditionToolTip(node, "PIDPressure")"
+                                              Color="@GetConditionColor(node, "PIDPressure")"
+                                              Variant="Variant.Text" />
+                            </MudStack>
+
+                            <MudSimpleTable Dense="true" Elevation="0" Class="mt-4">
+                                <tbody>
+                                    <tr>
+                                        <td>Architecture</td>
+                                        <td>@node.Architecture</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Boot ID</td>
+                                        <td>@node.BootID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ContainerRuntime Version</td>
+                                        <td>@node.ContainerRuntimeVersion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kernel Version</td>
+                                        <td>@node.KernelVersion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>KubeProxy Version</td>
+                                        <td>@node.KubeProxyVersion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kubelet Version</td>
+                                        <td>@node.KubeletVersion</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Machine ID</td>
+                                        <td>@node.MachineID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Operating System</td>
+                                        <td>@node.OperatingSystem</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OS Image</td>
+                                        <td>@node.OsImage</td>
+                                    </tr>
+                                    <tr>
+                                        <td>System UUID</td>
+                                        <td>@node.SystemUUID</td>
+                                    </tr>
+                                </tbody>
+                            </MudSimpleTable>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    </ChildContent>
+    <ErrorContent>
+        <K8ErrorMessage Errors="@result" />
+    </ErrorContent>
+</UseShowClusterQuery>

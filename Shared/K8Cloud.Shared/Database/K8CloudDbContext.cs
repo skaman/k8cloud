@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 namespace K8Cloud.Shared.Database;
 
@@ -26,6 +27,10 @@ public class K8CloudDbContext : DbContext
         BuildAction?.Invoke(modelBuilder);
 
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)

@@ -33,7 +33,7 @@ public partial class CreateClusterPage
     private List<BreadcrumbItem>? BreadcrumbItems { get; set; } =
         new List<BreadcrumbItem>
         {
-            new BreadcrumbItem("Clusters", href: "/clusters"),
+            new BreadcrumbItem("Clusters", href: "/clusters", icon: Icons.Material.TwoTone.Home),
             new BreadcrumbItem($"Add", href: null, disabled: true)
         };
 

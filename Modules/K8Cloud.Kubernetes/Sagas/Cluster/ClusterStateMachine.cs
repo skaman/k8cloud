@@ -1,6 +1,4 @@
-﻿using K8Cloud.Contracts.Kubernetes.Data;
-using K8Cloud.Contracts.Kubernetes.Events;
-using K8Cloud.Contracts.Kubernetes.RequestResponse;
+﻿using K8Cloud.Contracts.Kubernetes.Events;
 using MassTransit;
 
 namespace K8Cloud.Kubernetes.Sagas.Cluster;
@@ -11,7 +9,7 @@ internal class ClusterStateMachine : MassTransitStateMachine<ClusterState>
     public State Healthy { get; private set; } = null!;
     public State NotHealthy { get; private set; } = null!;
 
-    public Event<AddCluster> CreateCluster { get; private set; } = null!;
+    //public Event<AddCluster> CreateCluster { get; private set; } = null!;
 
     public Schedule<ClusterState, RequestClusterStatus> RequestClusterStatus { get; private set; } =
         null!;
@@ -20,7 +18,7 @@ internal class ClusterStateMachine : MassTransitStateMachine<ClusterState>
     {
         InstanceState(x => x.CurrentState);
 
-        Event(() => CreateCluster, e => e.CorrelateById(x => x.Message.Id));
+        //Event(() => CreateCluster, e => e.CorrelateById(x => x.Message.Id));
 
         Schedule(
             () => RequestClusterStatus,

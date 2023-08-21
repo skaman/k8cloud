@@ -1,3 +1,4 @@
+using K8Cloud.Web.Components;
 using K8Cloud.Web.Components.Contexts;
 using MudBlazor;
 
@@ -6,7 +7,15 @@ namespace K8Cloud.Web.Pages.Cluster;
 public partial class ClustersPage
 {
     private List<BreadcrumbItem> BreadcrumbItems { get; } =
-        new List<BreadcrumbItem> { new BreadcrumbItem("Clusters", href: null, disabled: true) };
+        new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem(
+                "Clusters",
+                href: null,
+                disabled: true,
+                icon: Icons.Material.TwoTone.Home
+            )
+        };
 
     private SortingContext SortingContext { get; } = new SortingContext();
 
@@ -60,5 +69,25 @@ public partial class ClustersPage
     {
         Search = debouncedText;
         StateHasChanged();
+    }
+
+    private Color GetStatusColor(bool? isOperative)
+    {
+        return isOperative switch
+        {
+            true => Color.Success,
+            false => Color.Error,
+            _ => Color.Default
+        };
+    }
+
+    private string GetStatusLabel(bool? isOperative)
+    {
+        return isOperative switch
+        {
+            true => "Operative",
+            false => "Not operative",
+            _ => "Unkwnown"
+        };
     }
 }

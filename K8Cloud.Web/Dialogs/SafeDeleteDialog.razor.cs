@@ -28,6 +28,7 @@ public partial class SafeDeleteDialog
 
     private void InsertedResourceNameChanged(string value)
     {
+        InsertedResourceName = value;
         IsValidResourceName = value == ResourceName;
     }
 }

@@ -1,11 +1,15 @@
-﻿<MudChip Label="true"
-         Variant="Variant.Outlined"
-         Size="Size.Small"
-         Color="Color.Default">
-    @Role
-</MudChip>
+﻿@inherits MudChip
+
+@{
+    base.BuildRenderTree(__builder);
+}
 
 @code {
-    [Parameter]
-    public string? Role { get; set; }
+    public K8RoleChip()
+    {
+        Variant = Variant.Outlined;
+        Size = Size.Small;
+        Color = Color.Default;
+        Label = true;
+    }
 }

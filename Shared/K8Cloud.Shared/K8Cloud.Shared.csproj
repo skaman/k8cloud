@@ -12,9 +12,9 @@
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="HotChocolate" Version="13.4.0" />
     <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.4.0" />
-    <PackageReference Include="MassTransit" Version="8.0.16" />
-    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.0.16" />
-    <PackageReference Include="MassTransit.Quartz" Version="8.0.16" />
+    <PackageReference Include="MassTransit" Version="8.1.0" />
+    <PackageReference Include="MassTransit.EntityFrameworkCore" Version="8.1.0" />
+    <PackageReference Include="MassTransit.Quartz" Version="8.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
     <PackageReference Include="Quartz" Version="3.7.0" />

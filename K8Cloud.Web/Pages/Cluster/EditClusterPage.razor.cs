@@ -48,9 +48,13 @@ public partial class EditClusterPage
         {
             _breadcrumbItems = new List<BreadcrumbItem>
             {
-                new BreadcrumbItem("Clusters", href: "/clusters"),
+                new BreadcrumbItem(
+                    "Clusters",
+                    href: "/clusters",
+                    icon: Icons.Material.TwoTone.Home
+                ),
                 new BreadcrumbItem(queryResult.ServerName, href: $"/clusters/{Id}"),
-                new BreadcrumbItem($"Edit", href: null, disabled: true)
+                new BreadcrumbItem("Edit", href: null, disabled: true)
             };
         }
         return _breadcrumbItems;
@@ -77,7 +81,7 @@ public partial class EditClusterPage
             Snackbar,
             async (model, cancellationToken) =>
             {
-                var result = await Client.ValidateEditCluster
+                var result = await Client.ValidateUpdateCluster
                     .ExecuteAsync(Id, Mapper.Map<ClusterDataInput>(model), cancellationToken)
                     .ConfigureAwait(false);
                 return result.Data?.ValidateUpdateCluster.ValidationResult;
@@ -99,7 +103,7 @@ public partial class EditClusterPage
     private async Task Save()
     {
         IsSaving = true;
-        var result = await Client.EditCluster.ExecuteAsync(
+        var result = await Client.UpdateCluster.ExecuteAsync(
             Id,
             Mapper.Map<ClusterDataInput>(_data),
             _version!

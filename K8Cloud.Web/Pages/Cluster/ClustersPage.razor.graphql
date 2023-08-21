@@ -4,6 +4,9 @@ query ClustersQuery($skip: Int!, $take: Int!, $order: [ClusterRecordSortInput!],
       id
       serverName
       serverAddress
+      status {
+        isOperative
+      }
     }
     totalCount
   }

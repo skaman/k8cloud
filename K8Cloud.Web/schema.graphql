@@ -13,6 +13,7 @@ type Mutation {
   validateCreateCluster(input: ValidateCreateClusterInput!): ValidateCreateClusterPayload!
   updateCluster(input: UpdateClusterInput!): UpdateClusterPayload!
   validateUpdateCluster(input: ValidateUpdateClusterInput!): ValidateUpdateClusterPayload!
+  deleteCluster(input: DeleteClusterInput!): DeleteClusterPayload!
 }
 
 input ClusterRecordFilterInput {
@@ -131,6 +132,7 @@ type ClusterRecord {
   userCredentialsCertificateData: String!
   userCredentialsKeyData: String!
   namespace: String!
+  status: ClusterStatus
 }
 
 interface Error {
@@ -142,14 +144,6 @@ scalar UUID
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime
 
-type ValidationFailure {
-  propertyName: String
-  errorMessage: String
-  severity: Severity!
-  errorCode: String
-  formattedMessagePlaceholderValues: [KeyValuePairOfStringAndObject!]
-}
-
 input ClusterDataInput {
   serverName: String!
   serverAddress: String!
@@ -160,11 +154,44 @@ input ClusterDataInput {
   namespace: String!
 }
 
+type ValidationFailure {
+  propertyName: String
+  errorMessage: String
+  severity: Severity!
+  errorCode: String
+  formattedMessagePlaceholderValues: [KeyValuePairOfStringAndObject!]
+}
+
 type ValidationResult {
   toDictionary: [KeyValuePairOfStringAndString__!]
   isValid: Boolean!
   errors: [ValidationFailure]
   ruleSetsExecuted: [String]
+}
+
+type ClusterStatus {
+  isOperative: Boolean!
+  nodes: [NodeInfo!]!
+}
+
+type NodeInfo {
+  id: UUID!
+  name: String!
+  ipAddresses: [String!]!
+  roles: [String!]!
+  conditions: [NodeCondition!]!
+  architecture: String
+  bootID: String
+  containerRuntimeVersion: String
+  kernelVersion: String
+  kubeProxyVersion: String
+  kubeletVersion: String
+  machineID: String
+  operatingSystem: String
+  osImage: String
+  systemUUID: String
+  podCIDR: String
+  podCIDRs: [String!]!
 }
 
 type KeyValuePairOfStringAndString__ {
@@ -180,6 +207,12 @@ enum Severity {
   ERROR
   WARNING
   INFO
+}
+
+type NodeCondition {
+  type: String!
+  isOperative: Boolean!
+  message: String
 }
 
 input CreateClusterInput {
@@ -221,4 +254,12 @@ input ValidateUpdateClusterInput {
 
 type ValidateUpdateClusterPayload {
   validationResult: ValidationResult
+}
+
+input DeleteClusterInput {
+  clusterId: UUID!
+}
+
+type DeleteClusterPayload {
+  clusterRecord: ClusterRecord
 }
