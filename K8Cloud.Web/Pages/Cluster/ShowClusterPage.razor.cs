@@ -21,8 +21,6 @@ public partial class ShowClusterPage
     [Parameter]
     public Guid Id { get; set; }
 
-    private List<BreadcrumbItem>? BreadcrumbItems { get; set; }
-
     private bool IsLoading { get; set; }
 
     private List<BreadcrumbItem> GetBreadcrumbItems(IShowClusterQuery_ClusterById queryResult)
@@ -81,6 +79,7 @@ public partial class ShowClusterPage
 
     private async Task Delete(IShowClusterQuery_ClusterById queryResult)
     {
+        IsLoading = true;
         var result = await DialogService.ShowSafeDeleteDialog(
             $"Delete cluster {queryResult.ServerName}",
             queryResult.ServerName
@@ -99,5 +98,6 @@ public partial class ShowClusterPage
                 Snackbar.AddClientErrors(response.Errors);
             }
         }
+        IsLoading = false;
     }
 }

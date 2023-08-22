@@ -9,6 +9,6 @@ internal class ClusterProfile : Profile
     public ClusterProfile()
     {
         CreateMap<Cluster, ClusterData>();
-        CreateMap<Cluster, ClusterRecord>();
+        CreateMap<Cluster, ClusterResource>();
     }
 }

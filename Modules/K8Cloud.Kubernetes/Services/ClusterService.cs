@@ -6,30 +6,40 @@ using K8Cloud.Kubernetes.Database;
 using K8Cloud.Kubernetes.Entities;
 using K8Cloud.Kubernetes.Validators;
 using K8Cloud.Shared.Database;
+using k8s;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using static HotChocolate.ErrorCodes;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace K8Cloud.Kubernetes.Services;
 
 internal class ClusterService
 {
+    private static TimeSpan CacheExpiration = TimeSpan.FromSeconds(30);
+
     private readonly K8CloudDbContext _dbContext;
     private readonly ClusterDataValidator _clusterDataValidator;
+    private readonly KubernetesClientsService _kubernetesClientsService;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
+    private readonly IDistributedCache _cache;
 
     public ClusterService(
         K8CloudDbContext dbContext,
         ClusterDataValidator clusterDataValidator,
+        KubernetesClientsService kubernetesClientsService,
         IPublishEndpoint publishEndpoint,
-        IMapper mapper
+        IMapper mapper,
+        IDistributedCache cache
     )
     {
         _dbContext = dbContext;
         _clusterDataValidator = clusterDataValidator;
+        _kubernetesClientsService = kubernetesClientsService;
         _publishEndpoint = publishEndpoint;
         _mapper = mapper;
+        _cache = cache;
     }
 
     public async Task<Cluster> CreateAsync(
@@ -53,10 +63,16 @@ internal class ClusterService
         };
 
         await _dbContext.AddAsync(cluster, cancellationToken).ConfigureAwait(false);
-        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _publishEndpoint
-            .Publish(new CreatedCluster { ClusterId = cluster.Id, Data = data }, cancellationToken)
+            .Publish(
+                new CreatedCluster
+                {
+                    ClusterId = cluster.Id,
+                    Data = _mapper.Map<ClusterResource>(cluster)
+                },
+                cancellationToken
+            )
             .ConfigureAwait(false);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -100,10 +116,16 @@ internal class ClusterService
         cluster.Version = uint.Parse(version);
 
         _dbContext.Update(cluster);
-        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _publishEndpoint
-            .Publish(new UpdatedCluster { ClusterId = cluster.Id, Data = data }, cancellationToken)
+            .Publish(
+                new UpdatedCluster
+                {
+                    ClusterId = cluster.Id,
+                    Data = _mapper.Map<ClusterResource>(cluster)
+                },
+                cancellationToken
+            )
             .ConfigureAwait(false);
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
@@ -131,14 +153,13 @@ internal class ClusterService
             .SingleAsync(x => x.Id == clusterId, cancellationToken)
             .ConfigureAwait(false);
         _dbContext.Remove(cluster);
-        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         await _publishEndpoint
             .Publish(
                 new DeletedCluster
                 {
                     ClusterId = cluster.Id,
-                    Data = _mapper.Map<ClusterData>(cluster)
+                    Data = _mapper.Map<ClusterResource>(cluster)
                 },
                 cancellationToken
             )
@@ -146,5 +167,55 @@ internal class ClusterService
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return cluster;
+    }
+
+    public async Task<ClusterStatus> GetStatusAsync(
+        Guid clusterId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        var key = $"clusterStatus:{clusterId}";
+        var cacheValue = await _cache.GetStringAsync(key, cancellationToken).ConfigureAwait(false);
+        if (!string.IsNullOrEmpty(cacheValue))
+        {
+            var deserializedData = JsonSerializer.Deserialize<ClusterStatus>(cacheValue);
+            if (deserializedData != null)
+            {
+                return deserializedData;
+            }
+        }
+
+        var client = _kubernetesClientsService.GetClient(clusterId);
+        var response = await client.CoreV1
+            .ListNodeAsync(cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var nodes = _mapper.Map<NodeInfo[]>(response.Items);
+
+        var status = new ClusterStatus
+        {
+            IsOperative = !Array.Exists(
+                nodes,
+                node =>
+                    Array.Exists(
+                        node.Conditions,
+                        condition => condition.Type == "Ready" && !condition.IsOperative
+                    )
+            ),
+            Nodes = nodes
+        };
+
+        await _cache
+            .SetStringAsync(
+                key,
+                JsonSerializer.Serialize(status),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = CacheExpiration
+                },
+                cancellationToken
+            )
+            .ConfigureAwait(false);
+
+        return status;
     }
 }

@@ -8,7 +8,7 @@ query ShowClusterQuery($id: UUID!) {
   }
 }
 
-fragment ShowClusterStatusFragment on ClusterRecord {
+fragment ShowClusterStatusFragment on ClusterResource {
   status {
     isOperative
     nodes {
@@ -47,7 +47,7 @@ fragment ShowClusterNodeConditionFragment on NodeCondition {
 
 mutation DeleteCluster($id: UUID!) {
   deleteCluster(input: { clusterId: $id }) {
-    clusterRecord {
+    clusterResource {
       id
     }
   }

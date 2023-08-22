@@ -107,6 +107,7 @@ builder.Services
     .RegisterDbContext<K8CloudDbContext>(DbContextKind.Resolver)
     .AddFiltering<ExtendedFilteringConvention>()
     .AddSorting()
+    .AddSharedTypes()
     .AddKubernetesTypes();
 
 var app = builder.Build();

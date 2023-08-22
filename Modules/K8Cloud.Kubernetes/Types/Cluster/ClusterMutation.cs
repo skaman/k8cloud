@@ -6,13 +6,13 @@ using K8Cloud.Contracts.Kubernetes.Data;
 using K8Cloud.Kubernetes.Services;
 using K8Cloud.Shared.Database;
 
-namespace K8Cloud.Kubernetes.Types;
+namespace K8Cloud.Kubernetes.Types.Cluster;
 
 [MutationType]
 internal static class ClusterMutation
 {
     [Error(typeof(ValidationException))]
-    public static async Task<ClusterRecord> CreateClusterAsync(
+    public static async Task<ClusterResource> CreateClusterAsync(
         ClusterData data,
         K8CloudDbContext dbContext,
         [Service] ClusterService clusterService,
@@ -27,7 +27,7 @@ internal static class ClusterMutation
         var cluster = await clusterService.CreateAsync(data, cancellationToken).ConfigureAwait(false);
 
         await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
-        return mapper.Map<ClusterRecord>(cluster);
+        return mapper.Map<ClusterResource>(cluster);
     }
 
     public static Task<FluentValidation.Results.ValidationResult> ValidateCreateClusterAsync(
@@ -40,7 +40,7 @@ internal static class ClusterMutation
     }
 
     [Error(typeof(ValidationException))]
-    public static async Task<ClusterRecord> UpdateClusterAsync(
+    public static async Task<ClusterResource> UpdateClusterAsync(
         Guid clusterId,
         ClusterData data,
         string version,
@@ -59,7 +59,7 @@ internal static class ClusterMutation
             .ConfigureAwait(false);
 
         await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
-        return mapper.Map<ClusterRecord>(cluster);
+        return mapper.Map<ClusterResource>(cluster);
     }
 
     public static Task<FluentValidation.Results.ValidationResult> ValidateUpdateClusterAsync(
@@ -72,7 +72,7 @@ internal static class ClusterMutation
         return clusterService.ValidateUpdateAsync(clusterId, data, cancellationToken);
     }
 
-    public static async Task<ClusterRecord> DeleteClusterAsync(
+    public static async Task<ClusterResource> DeleteClusterAsync(
         Guid clusterId,
         K8CloudDbContext dbContext,
         [Service] ClusterService clusterService,
@@ -89,6 +89,6 @@ internal static class ClusterMutation
             .ConfigureAwait(false);
 
         await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
-        return mapper.Map<ClusterRecord>(cluster);
+        return mapper.Map<ClusterResource>(cluster);
     }
 }

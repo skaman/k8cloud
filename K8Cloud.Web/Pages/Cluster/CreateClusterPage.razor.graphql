@@ -1,6 +1,6 @@
 mutation CreateCluster($data: ClusterDataInput!) {
   createCluster(input: { data: $data }) {
-    clusterRecord {
+    clusterResource {
       id
     }
     errors {

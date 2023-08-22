@@ -33,31 +33,31 @@ public partial class ClustersPage
         SortServerAddress = new SortingContext.Item(SortingContext);
     }
 
-    private IReadOnlyList<ClusterRecordSortInput> GetSortInput()
+    private IReadOnlyList<ClusterResourceSortInput> GetSortInput()
     {
-        var sortInput = new ClusterRecordSortInput();
+        var sortInput = new ClusterResourceSortInput();
         SortServerName.SetToGraphQL(value => sortInput.ServerName = value);
         SortServerAddress.SetToGraphQL(value => sortInput.ServerAddress = value);
 
-        return new List<ClusterRecordSortInput> { sortInput };
+        return new List<ClusterResourceSortInput> { sortInput };
     }
 
-    private ClusterRecordFilterInput? GetFilterInput()
+    private ClusterResourceFilterInput? GetFilterInput()
     {
         if (string.IsNullOrEmpty(Search))
         {
             return null;
         }
 
-        return new ClusterRecordFilterInput
+        return new ClusterResourceFilterInput
         {
-            Or = new List<ClusterRecordFilterInput>
+            Or = new List<ClusterResourceFilterInput>
             {
-                new ClusterRecordFilterInput
+                new ClusterResourceFilterInput
                 {
                     ServerName = new StringOperationFilterInput { ContainsInvariant = Search }
                 },
-                new ClusterRecordFilterInput
+                new ClusterResourceFilterInput
                 {
                     ServerAddress = new StringOperationFilterInput { ContainsInvariant = Search }
                 }

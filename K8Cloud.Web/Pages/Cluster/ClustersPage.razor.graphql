@@ -1,4 +1,4 @@
-query ClustersQuery($skip: Int!, $take: Int!, $order: [ClusterRecordSortInput!], $where: ClusterRecordFilterInput) {
+query ClustersQuery($skip: Int!, $take: Int!, $order: [ClusterResourceSortInput!], $where: ClusterResourceFilterInput) {
   clusters(skip: $skip take: $take, order: $order, where: $where) {
     items {
       id

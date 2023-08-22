@@ -14,7 +14,7 @@ query EditClusterQuery($id: UUID!) {
 
 mutation UpdateCluster($id: UUID!, $data: ClusterDataInput!, $version: String!) {
   updateCluster(input: { clusterId: $id, data: $data, version: $version }) {
-    clusterRecord {
+    clusterResource {
       id
     }
     errors {

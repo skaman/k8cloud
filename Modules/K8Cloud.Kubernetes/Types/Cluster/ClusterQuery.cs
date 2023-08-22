@@ -7,8 +7,9 @@ using AutoMapper;
 using K8Cloud.Contracts.Kubernetes.Data;
 using AutoMapper.QueryableExtensions;
 using HotChocolate;
+using K8Cloud.Shared.GraphQL.Exceptions;
 
-namespace K8Cloud.Kubernetes.Types;
+namespace K8Cloud.Kubernetes.Types.Cluster;
 
 [QueryType]
 internal static class ClusterQuery
@@ -16,15 +17,15 @@ internal static class ClusterQuery
     [UseOffsetPaging]
     [UseFiltering]
     [UseSorting]
-    public static IQueryable<ClusterRecord> GetClusters(
+    public static IQueryable<ClusterResource> GetClusters(
         K8CloudDbContext dbContext,
         [Service] IMapper mapper
     )
     {
-        return dbContext.ClustersReadOnly().ProjectTo<ClusterRecord>(mapper.ConfigurationProvider);
+        return dbContext.ClustersReadOnly().ProjectTo<ClusterResource>(mapper.ConfigurationProvider);
     }
 
-    public static async Task<ClusterRecord> GetClusterById(
+    public static async Task<ClusterResource> GetClusterById(
         Guid id,
         K8CloudDbContext dbContext,
         [Service] IMapper mapper,
@@ -33,8 +34,12 @@ internal static class ClusterQuery
     {
         var result = await dbContext
             .ClustersReadOnly()
-            .SingleAsync(x => x.Id == id, cancellationToken)
+            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken)
             .ConfigureAwait(false);
-        return mapper.Map<ClusterRecord>(result);
+        if (result == null)
+        {
+            throw new ResourceNotFoundException(id);
+        }
+        return mapper.Map<ClusterResource>(result);
     }
 }

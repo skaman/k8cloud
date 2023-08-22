@@ -5,6 +5,7 @@
     "strawberryShake": {
       "name": "K8CloudClient",
       "url": "https://localhost:5001/graphql/",
+      "accessModifier": "public",
       "records": {
         "inputs": false,
         "entities": false

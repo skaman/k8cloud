@@ -1,5 +1,6 @@
 ﻿using k8s;
 using k8s.KubeConfigModels;
+using k8s.Models;
 using System.Text.Json;
 
 //var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
@@ -52,19 +53,26 @@ var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(
 var client = new K8Cloud.Test.Kubernetes(config);
 
 var nodes = await client.CoreV1.ListNodeAsync();
-Console.WriteLine(
-    JsonSerializer.Serialize(nodes, new JsonSerializerOptions { WriteIndented = true })
-);
+
+//Console.WriteLine(
+//    JsonSerializer.Serialize(nodes, new JsonSerializerOptions { WriteIndented = true })
+//);
 //foreach (var node in nodes.Items)
 //{
 //    Console.WriteLine(node.Metadata.Name);
 //}
 //
-//var pods = await client.CoreV1.ListPodForAllNamespacesAsync();
-//foreach (var pod in pods.Items)
-//{
-//    Console.WriteLine(pod.Metadata.Name);
-//}
+
+var labels = new Dictionary<string, string> { { "k8cloud.io/metadata.id", Guid.NewGuid().ToString() } };
+var znamespace = await client.CoreV1.CreateNamespaceAsync(
+    new V1Namespace { Metadata = new V1ObjectMeta { Name = "test2", Labels = labels } }
+);
+
+var pods = await client.CoreV1.ListNamespaceAsync();
+foreach (var pod in pods.Items)
+{
+    Console.WriteLine(pod.Metadata.Name);
+}
 //
 //var isHealth = await client.IsHealth();
 //Console.WriteLine(isHealth);

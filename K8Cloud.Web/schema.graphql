@@ -3,9 +3,38 @@
   mutation: Mutation
 }
 
+type ValidationResult {
+  isValid: Boolean!
+  errors: [ValidationFailure]
+}
+
+type ValidationFailure {
+  propertyName: String
+  errorMessage: String
+  severity: Severity!
+  errorCode: String
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+  eqInvariant: String
+  containsInvariant: String
+}
+
 type Query {
-  clusters(skip: Int take: Int where: ClusterRecordFilterInput order: [ClusterRecordSortInput!]): ClustersCollectionSegment
-  clusterById(id: UUID!): ClusterRecord!
+  clusters(skip: Int take: Int where: ClusterResourceFilterInput order: [ClusterResourceSortInput!]): ClustersCollectionSegment
+  clusterById(id: UUID!): ClusterResource!
 }
 
 type Mutation {
@@ -16,9 +45,15 @@ type Mutation {
   deleteCluster(input: DeleteClusterInput!): DeleteClusterPayload!
 }
 
-input ClusterRecordFilterInput {
-  and: [ClusterRecordFilterInput!]
-  or: [ClusterRecordFilterInput!]
+enum Severity {
+  ERROR
+  WARNING
+  INFO
+}
+
+input ClusterResourceFilterInput {
+  and: [ClusterResourceFilterInput!]
+  or: [ClusterResourceFilterInput!]
   id: UuidOperationFilterInput
   createdAt: DateTimeOperationFilterInput
   updatedAt: DateTimeOperationFilterInput
@@ -32,7 +67,7 @@ input ClusterRecordFilterInput {
   namespace: StringOperationFilterInput
 }
 
-input ClusterRecordSortInput {
+input ClusterResourceSortInput {
   id: SortEnumType
   createdAt: SortEnumType
   updatedAt: SortEnumType
@@ -51,7 +86,7 @@ type ClustersCollectionSegment {
   "Information to aid in pagination."
   pageInfo: CollectionSegmentInfo!
   "A flattened list of the items."
-  items: [ClusterRecord!]
+  items: [ClusterResource!]
   totalCount: Int!
 }
 
@@ -90,23 +125,6 @@ input DateTimeOperationFilterInput {
   nlte: DateTime
 }
 
-input StringOperationFilterInput {
-  and: [StringOperationFilterInput!]
-  or: [StringOperationFilterInput!]
-  eq: String
-  neq: String
-  contains: String
-  ncontains: String
-  in: [String]
-  nin: [String]
-  startsWith: String
-  nstartsWith: String
-  endsWith: String
-  nendsWith: String
-  eqInvariant: String
-  containsInvariant: String
-}
-
 enum SortEnumType {
   ASC
   DESC
@@ -120,7 +138,7 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
-type ClusterRecord {
+type ClusterResource {
   id: UUID!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -144,6 +162,11 @@ scalar UUID
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime
 
+type ClusterStatus {
+  isOperative: Boolean!
+  nodes: [NodeInfo!]!
+}
+
 input ClusterDataInput {
   serverName: String!
   serverAddress: String!
@@ -152,26 +175,6 @@ input ClusterDataInput {
   userCredentialsCertificateData: String!
   userCredentialsKeyData: String!
   namespace: String!
-}
-
-type ValidationFailure {
-  propertyName: String
-  errorMessage: String
-  severity: Severity!
-  errorCode: String
-  formattedMessagePlaceholderValues: [KeyValuePairOfStringAndObject!]
-}
-
-type ValidationResult {
-  toDictionary: [KeyValuePairOfStringAndString__!]
-  isValid: Boolean!
-  errors: [ValidationFailure]
-  ruleSetsExecuted: [String]
-}
-
-type ClusterStatus {
-  isOperative: Boolean!
-  nodes: [NodeInfo!]!
 }
 
 type NodeInfo {
@@ -194,21 +197,6 @@ type NodeInfo {
   podCIDRs: [String!]!
 }
 
-type KeyValuePairOfStringAndString__ {
-  key: String!
-  value: [String!]!
-}
-
-type KeyValuePairOfStringAndObject {
-  key: String!
-}
-
-enum Severity {
-  ERROR
-  WARNING
-  INFO
-}
-
 type NodeCondition {
   type: String!
   isOperative: Boolean!
@@ -222,7 +210,7 @@ input CreateClusterInput {
 union CreateClusterError = ValidationError
 
 type CreateClusterPayload {
-  clusterRecord: ClusterRecord
+  clusterResource: ClusterResource
   errors: [CreateClusterError!]
 }
 
@@ -243,7 +231,7 @@ input UpdateClusterInput {
 union UpdateClusterError = ValidationError
 
 type UpdateClusterPayload {
-  clusterRecord: ClusterRecord
+  clusterResource: ClusterResource
   errors: [UpdateClusterError!]
 }
 
@@ -261,5 +249,5 @@ input DeleteClusterInput {
 }
 
 type DeleteClusterPayload {
-  clusterRecord: ClusterRecord
+  clusterResource: ClusterResource
 }

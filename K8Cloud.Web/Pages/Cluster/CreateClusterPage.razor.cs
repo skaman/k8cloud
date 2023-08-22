@@ -88,7 +88,7 @@ public partial class CreateClusterPage
             {
                 ModifiedContext.MarkAsUnmodified();
                 NavigationManager.NavigateTo(
-                    $"/clusters/{result.Data!.CreateCluster.ClusterRecord!.Id}"
+                    $"/clusters/{result.Data!.CreateCluster.ClusterResource!.Id}"
                 );
             }
         }
