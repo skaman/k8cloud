@@ -7,6 +7,9 @@ using HotChocolate.Types;
 
 namespace K8Cloud.Shared.GraphQL;
 
+/// <summary>
+/// Queryable string invariant contains handler.
+/// </summary>
 public class QueryableStringInvariantEqualsHandler : QueryableStringOperationHandler
 {
     private static readonly MethodInfo _toLower = typeof(string)
@@ -17,6 +20,7 @@ public class QueryableStringInvariantEqualsHandler : QueryableStringOperationHan
 
     protected override int Operation => ExtendedFilterOperations.EqualsInvariant;
 
+    /// <inheritdoc />
     public override Expression HandleOperation(
         QueryableFilterContext context,
         IFilterOperationField field,

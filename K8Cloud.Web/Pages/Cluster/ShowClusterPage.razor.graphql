@@ -1,5 +1,5 @@
-query ShowClusterQuery($id: UUID!) {
-  clusterById(id: $id) {
+query ShowClusterQuery($clusterId: UUID!) {
+  clusterById(clusterId: $clusterId) {
     id
     serverName
     serverAddress

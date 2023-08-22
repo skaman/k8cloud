@@ -1,19 +1,25 @@
 ﻿using HotChocolate.Data;
 using HotChocolate.Types;
 using K8Cloud.Shared.Database;
-using K8Cloud.Kubernetes.Database;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using K8Cloud.Contracts.Kubernetes.Data;
 using AutoMapper.QueryableExtensions;
 using HotChocolate;
 using K8Cloud.Shared.GraphQL.Exceptions;
+using K8Cloud.Kubernetes.Extensions;
 
 namespace K8Cloud.Kubernetes.Types.Cluster;
 
 [QueryType]
 internal static class ClusterQuery
 {
+    /// <summary>
+    /// Get the clusters.
+    /// </summary>
+    /// <param name="dbContext">Database context.</param>
+    /// <param name="mapper">Mapper.</param>
+    /// <returns>Clusters query.</returns>
     [UseOffsetPaging]
     [UseFiltering]
     [UseSorting]
@@ -22,11 +28,21 @@ internal static class ClusterQuery
         [Service] IMapper mapper
     )
     {
-        return dbContext.ClustersReadOnly().ProjectTo<ClusterResource>(mapper.ConfigurationProvider);
+        return dbContext
+            .ClustersReadOnly()
+            .ProjectTo<ClusterResource>(mapper.ConfigurationProvider);
     }
 
+    /// <summary>
+    /// Get a cluster by id.
+    /// </summary>
+    /// <param name="clusterId">Cluster ID.</param>
+    /// <param name="dbContext">Database context.</param>
+    /// <param name="mapper">Mapper.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Cluster resource.</returns>
     public static async Task<ClusterResource> GetClusterById(
-        Guid id,
+        Guid clusterId,
         K8CloudDbContext dbContext,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
@@ -34,11 +50,11 @@ internal static class ClusterQuery
     {
         var result = await dbContext
             .ClustersReadOnly()
-            .SingleOrDefaultAsync(x => x.Id == id, cancellationToken)
+            .SingleOrDefaultAsync(x => x.Id == clusterId, cancellationToken)
             .ConfigureAwait(false);
         if (result == null)
         {
-            throw new ResourceNotFoundException(id);
+            throw new ResourceNotFoundException(clusterId);
         }
         return mapper.Map<ClusterResource>(result);
     }

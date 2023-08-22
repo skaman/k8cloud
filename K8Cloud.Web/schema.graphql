@@ -3,18 +3,6 @@
   mutation: Mutation
 }
 
-type ValidationResult {
-  isValid: Boolean!
-  errors: [ValidationFailure]
-}
-
-type ValidationFailure {
-  propertyName: String
-  errorMessage: String
-  severity: Severity!
-  errorCode: String
-}
-
 input StringOperationFilterInput {
   and: [StringOperationFilterInput!]
   or: [StringOperationFilterInput!]
@@ -32,17 +20,50 @@ input StringOperationFilterInput {
   containsInvariant: String
 }
 
+type ValidationFailure {
+  propertyName: String
+  errorMessage: String
+  severity: Severity!
+  errorCode: String
+}
+
+type ValidationResult {
+  isValid: Boolean!
+  errors: [ValidationFailure]
+}
+
 type Query {
+  "Get the clusters.\n\n\n**Returns:**\nClusters query."
   clusters(skip: Int take: Int where: ClusterResourceFilterInput order: [ClusterResourceSortInput!]): ClustersCollectionSegment
-  clusterById(id: UUID!): ClusterResource!
+  "Get a cluster by id.\n\n\n**Returns:**\nCluster resource."
+  clusterById("Cluster ID." clusterId: UUID!): ClusterResource!
+  "Get the namespaces.\n\n\n**Returns:**\nNamespaces query."
+  namespaces(skip: Int take: Int "Cluster ID." clusterId: UUID! where: NamespaceResourceFilterInput order: [NamespaceResourceSortInput!]): NamespacesCollectionSegment
+  "Get a namespace by id.\n\n\n**Returns:**\nNamespace resource."
+  namespaceById("Cluster ID." clusterId: UUID! "Namespace ID." namespaceId: UUID!): NamespaceResource!
 }
 
 type Mutation {
+  "Create a cluster.\n\n\n**Returns:**\nThe created cluster resource."
   createCluster(input: CreateClusterInput!): CreateClusterPayload!
+  "Validate the cluster data for creation.\n\n\n**Returns:**\nValidation data."
   validateCreateCluster(input: ValidateCreateClusterInput!): ValidateCreateClusterPayload!
+  "Update a cluster.\n\n\n**Returns:**\nThe updated cluster resource."
   updateCluster(input: UpdateClusterInput!): UpdateClusterPayload!
+  "Validate the cluster data for update.\n\n\n**Returns:**\nValidation data."
   validateUpdateCluster(input: ValidateUpdateClusterInput!): ValidateUpdateClusterPayload!
+  "Delete a cluster.\n\n\n**Returns:**\nThe deleted cluster resource."
   deleteCluster(input: DeleteClusterInput!): DeleteClusterPayload!
+  "Create a namespace.\n\n\n**Returns:**\nThe created namespace resource."
+  createNamespace(input: CreateNamespaceInput!): CreateNamespacePayload!
+  "Validate the namespace data for creation.\n\n\n**Returns:**\nValidation data."
+  validateCreateNamespace(input: ValidateCreateNamespaceInput!): ValidateCreateNamespacePayload!
+  "Update a namespace.\n\n\n**Returns:**\nThe updated namespace resource."
+  updateNamespace(input: UpdateNamespaceInput!): UpdateNamespacePayload!
+  "Validate the namespace data for update.\n\n\n**Returns:**\nValidation data."
+  validateUpdateNamespace(input: ValidateUpdateNamespaceInput!): ValidateUpdateNamespacePayload!
+  "Delete a namespace.\n\n\n**Returns:**\nThe deleted namespace resource."
+  deleteNamespace(input: DeleteNamespaceInput!): DeleteNamespacePayload!
 }
 
 enum Severity {
@@ -51,33 +72,62 @@ enum Severity {
   INFO
 }
 
+type ValidationError implements Error {
+  message: String!
+  errors: [ValidationFailure]
+}
+
+"Cluster resource."
 input ClusterResourceFilterInput {
   and: [ClusterResourceFilterInput!]
   or: [ClusterResourceFilterInput!]
+  "Resource ID."
   id: UuidOperationFilterInput
+  "Resource created at."
   createdAt: DateTimeOperationFilterInput
+  "Resource updated at."
   updatedAt: DateTimeOperationFilterInput
+  "Resource version."
   version: StringOperationFilterInput
+  "Cluster name."
   serverName: StringOperationFilterInput
+  "Cluster address."
   serverAddress: StringOperationFilterInput
+  "Cluster certificate authority data."
   serverCertificateAuthorityData: StringOperationFilterInput
+  "Login username."
   userName: StringOperationFilterInput
+  "Login user credentials certificate data."
   userCredentialsCertificateData: StringOperationFilterInput
+  "Login user credentials key data."
   userCredentialsKeyData: StringOperationFilterInput
+  "Namespace."
   namespace: StringOperationFilterInput
 }
 
+"Cluster resource."
 input ClusterResourceSortInput {
+  "Resource ID."
   id: SortEnumType
+  "Resource created at."
   createdAt: SortEnumType
+  "Resource updated at."
   updatedAt: SortEnumType
+  "Resource version."
   version: SortEnumType
+  "Cluster name."
   serverName: SortEnumType
+  "Cluster address."
   serverAddress: SortEnumType
+  "Cluster certificate authority data."
   serverCertificateAuthorityData: SortEnumType
+  "Login username."
   userName: SortEnumType
+  "Login user credentials certificate data."
   userCredentialsCertificateData: SortEnumType
+  "Login user credentials key data."
   userCredentialsKeyData: SortEnumType
+  "Namespace."
   namespace: SortEnumType
 }
 
@@ -90,9 +140,47 @@ type ClustersCollectionSegment {
   totalCount: Int!
 }
 
-type ValidationError implements Error {
+"Namespace resource."
+input NamespaceResourceFilterInput {
+  and: [NamespaceResourceFilterInput!]
+  or: [NamespaceResourceFilterInput!]
+  "Resource ID."
+  id: UuidOperationFilterInput
+  "Resource created at."
+  createdAt: DateTimeOperationFilterInput
+  "Resource updated at."
+  updatedAt: DateTimeOperationFilterInput
+  "Resource version."
+  version: StringOperationFilterInput
+  "Namespace name."
+  name: StringOperationFilterInput
+}
+
+"Namespace resource."
+input NamespaceResourceSortInput {
+  "Resource ID."
+  id: SortEnumType
+  "Resource created at."
+  createdAt: SortEnumType
+  "Resource updated at."
+  updatedAt: SortEnumType
+  "Resource version."
+  version: SortEnumType
+  "Namespace name."
+  name: SortEnumType
+}
+
+"A segment of a collection."
+type NamespacesCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [NamespaceResource!]
+  totalCount: Int!
+}
+
+interface Error {
   message: String!
-  errors: [ValidationFailure]
 }
 
 input UuidOperationFilterInput {
@@ -138,23 +226,48 @@ type CollectionSegmentInfo {
   hasPreviousPage: Boolean!
 }
 
+"Cluster resource."
 type ClusterResource {
+  "Resource ID."
   id: UUID!
+  "Resource created at."
   createdAt: DateTime!
+  "Resource updated at."
   updatedAt: DateTime!
+  "Resource version."
   version: String!
+  "Cluster name."
   serverName: String!
+  "Cluster address."
   serverAddress: String!
+  "Cluster certificate authority data."
   serverCertificateAuthorityData: String!
+  "Login username."
   userName: String!
+  "Login user credentials certificate data."
   userCredentialsCertificateData: String!
+  "Login user credentials key data."
   userCredentialsKeyData: String!
+  "Namespace."
   namespace: String!
-  status: ClusterStatus
+  "Cluster status."
+  status: ClusterResourceStatus
+  "Namespaces."
+  namespaces: [NamespaceResource!]!
 }
 
-interface Error {
-  message: String!
+"Namespace resource."
+type NamespaceResource {
+  "Resource ID."
+  id: UUID!
+  "Resource created at."
+  createdAt: DateTime!
+  "Resource updated at."
+  updatedAt: DateTime!
+  "Resource version."
+  version: String!
+  "Namespace name."
+  name: String!
 }
 
 scalar UUID
@@ -162,48 +275,88 @@ scalar UUID
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."
 scalar DateTime
 
-type ClusterStatus {
-  isOperative: Boolean!
-  nodes: [NodeInfo!]!
+"Namespace data."
+input NamespaceDataInput {
+  "Namespace name."
+  name: String!
 }
 
+"Cluster data."
 input ClusterDataInput {
+  "Cluster name."
   serverName: String!
+  "Cluster address."
   serverAddress: String!
+  "Cluster certificate authority data."
   serverCertificateAuthorityData: String!
+  "Login username."
   userName: String!
+  "Login user credentials certificate data."
   userCredentialsCertificateData: String!
+  "Login user credentials key data."
   userCredentialsKeyData: String!
+  "Namespace."
   namespace: String!
 }
 
+"Represents the status of a cluster."
+type ClusterResourceStatus {
+  "The cluster is ready."
+  isOperative: Boolean!
+  "Informations about each node of the cluster."
+  nodes: [NodeInfo!]!
+}
+
+"Node informations."
 type NodeInfo {
+  "Kubernetes node ID."
   id: UUID!
+  "Node name."
   name: String!
+  "Node IP addresses."
   ipAddresses: [String!]!
+  "Node roles."
   roles: [String!]!
+  "Node conditions."
   conditions: [NodeCondition!]!
+  "The Architecture reported by the node."
   architecture: String
+  "The Architecture reported by the node."
   bootID: String
+  "ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd:\/\/1.4.2)."
   containerRuntimeVersion: String
+  "ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd:\/\/1.4.2)."
   kernelVersion: String
+  "ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd:\/\/1.4.2)."
   kubeProxyVersion: String
+  "Kubelet Version reported by the node."
   kubeletVersion: String
+  "MachineID reported by the node. For unique machine identification in the cluster this field is preferred.\nLearn more from man(5) machine-id: http:\/\/man7.org\/linux\/man-pages\/man5\/machine-id.5.html."
   machineID: String
+  "The Operating System reported by the node."
   operatingSystem: String
+  "OS Image reported by the node from \/etc\/os-release (e.g. Debian GNU\/Linux 7 (wheezy))."
   osImage: String
+  "SystemUUID reported by the node. For unique machine identification MachineID is preferred.\nThis field is specific to Red Hat hosts https:\/\/access.redhat.com\/documentation\/en-us\/red_hat_subscription_management\/1\/html\/rhsm\/uuid"
   systemUUID: String
+  "PodCIDR represents the pod IP range assigned to the node."
   podCIDR: String
+  "podCIDRs represents the IP ranges assigned to the node for usage by Pods on that node.\nIf this field is specified, the 0th entry must match the podCIDR field. It may contain at most 1 value for\neach of IPv4 and IPv6."
   podCIDRs: [String!]!
 }
 
+"Node condition."
 type NodeCondition {
+  "Condition type."
   type: String!
+  "Condition status."
   isOperative: Boolean!
+  "Condition message."
   message: String
 }
 
 input CreateClusterInput {
+  "Cluster data."
   data: ClusterDataInput!
 }
 
@@ -215,6 +368,7 @@ type CreateClusterPayload {
 }
 
 input ValidateCreateClusterInput {
+  "Cluster data."
   data: ClusterDataInput!
 }
 
@@ -223,8 +377,11 @@ type ValidateCreateClusterPayload {
 }
 
 input UpdateClusterInput {
+  "Cluster ID."
   clusterId: UUID!
+  "Cluster data."
   data: ClusterDataInput!
+  "Cluster resource version."
   version: String!
 }
 
@@ -236,7 +393,9 @@ type UpdateClusterPayload {
 }
 
 input ValidateUpdateClusterInput {
+  "Cluster ID."
   clusterId: UUID!
+  "Cluster data."
   data: ClusterDataInput!
 }
 
@@ -245,9 +404,77 @@ type ValidateUpdateClusterPayload {
 }
 
 input DeleteClusterInput {
+  "Cluster ID."
   clusterId: UUID!
 }
 
 type DeleteClusterPayload {
   clusterResource: ClusterResource
+}
+
+input CreateNamespaceInput {
+  "Cluster ID."
+  clusterId: UUID!
+  "Namespace data."
+  data: NamespaceDataInput!
+}
+
+union CreateNamespaceError = ValidationError
+
+type CreateNamespacePayload {
+  namespaceResource: NamespaceResource
+  errors: [CreateNamespaceError!]
+}
+
+input ValidateCreateNamespaceInput {
+  "Cluster ID."
+  clusterId: UUID!
+  "Namespace data."
+  data: NamespaceDataInput!
+}
+
+type ValidateCreateNamespacePayload {
+  validationResult: ValidationResult
+}
+
+input UpdateNamespaceInput {
+  "Cluster ID."
+  clusterId: UUID!
+  "Namespace ID."
+  namespaceId: UUID!
+  "Namespace data."
+  data: NamespaceDataInput!
+  "Namespace resource version."
+  version: String!
+}
+
+union UpdateNamespaceError = ValidationError
+
+type UpdateNamespacePayload {
+  namespaceResource: NamespaceResource
+  errors: [UpdateNamespaceError!]
+}
+
+input ValidateUpdateNamespaceInput {
+  "Cluster ID."
+  clusterId: UUID!
+  "Namespace ID."
+  namespaceId: UUID!
+  "Namespace data."
+  data: NamespaceDataInput!
+}
+
+type ValidateUpdateNamespacePayload {
+  validationResult: ValidationResult
+}
+
+input DeleteNamespaceInput {
+  "Cluster ID."
+  clusterId: UUID!
+  "Namespace ID."
+  namespaceId: UUID!
+}
+
+type DeleteNamespacePayload {
+  namespaceResource: NamespaceResource
 }

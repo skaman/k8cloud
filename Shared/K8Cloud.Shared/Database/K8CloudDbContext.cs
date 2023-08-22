@@ -33,22 +33,35 @@ public class K8CloudDbContext : DbContext
         modelBuilder.AddOutboxStateEntity();
     }
 
+    /// <inheritdoc />
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         AddTimestamps();
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
-    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public override Task<int> SaveChangesAsync(
+        bool acceptAllChangesOnSuccess,
+        CancellationToken cancellationToken = default
+    )
     {
         AddTimestamps();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
+    /// <summary>
+    /// Update timestamps to the added and modified entities.
+    /// </summary>
     private void AddTimestamps()
     {
-        var entities = ChangeTracker.Entries()
-            .Where(x => x.Entity is Entity && (x.State == EntityState.Added || x.State == EntityState.Modified));
+        var entities = ChangeTracker
+            .Entries()
+            .Where(
+                x =>
+                    x.Entity is Entity
+                    && (x.State == EntityState.Added || x.State == EntityState.Modified)
+            );
 
         var now = DateTime.UtcNow;
         foreach (var entity in entities)

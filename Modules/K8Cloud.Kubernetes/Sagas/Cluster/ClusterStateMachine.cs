@@ -11,8 +11,8 @@ internal class ClusterStateMachine : MassTransitStateMachine<ClusterState>
 
     //public Event<AddCluster> CreateCluster { get; private set; } = null!;
 
-    public Schedule<ClusterState, RequestClusterStatus> RequestClusterStatus { get; private set; } =
-        null!;
+    //public Schedule<ClusterState, RequestClusterStatus> RequestClusterStatus { get; private set; } =
+    //    null!;
 
     public ClusterStateMachine()
     {
@@ -20,25 +20,25 @@ internal class ClusterStateMachine : MassTransitStateMachine<ClusterState>
 
         //Event(() => CreateCluster, e => e.CorrelateById(x => x.Message.Id));
 
-        Schedule(
-            () => RequestClusterStatus,
-            instance => instance.RequestClusterStatusTokenId,
-            s =>
-            {
-                s.Delay = TimeSpan.FromDays(30);
-            }
-        );
+        //Schedule(
+        //    () => RequestClusterStatus,
+        //    instance => instance.RequestClusterStatusTokenId,
+        //    s =>
+        //    {
+        //        s.Delay = TimeSpan.FromDays(30);
+        //    }
+        //);
 
         //Initially(When(CreateCluster).CopyData().UpdateCreatedAt().TransitionTo(Created));
 
-        WhenEnter(
-            Created,
-            binder =>
-                binder.Schedule(
-                    RequestClusterStatus,
-                    x => x.Init<RequestClusterStatus>(new { x.CorrelationId })
-                )
-        );
+        //WhenEnter(
+        //    Created,
+        //    binder =>
+        //        binder.Schedule(
+        //            RequestClusterStatus,
+        //            x => x.Init<RequestClusterStatus>(new { x.CorrelationId })
+        //        )
+        //);
     }
 }
 

@@ -6,18 +6,19 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+	
   <ItemGroup>
-    <PackageReference Include="HotChocolate.Types.Analyzers" Version="13.4.0" />
+    <PackageReference Include="HotChocolate.Types.Analyzers" Version="13.5.0" />
     <PackageReference Include="KubernetesClient" Version="11.0.44" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\K8Cloud.Contracts\K8Cloud.Contracts.csproj" />
     <ProjectReference Include="..\..\Shared\K8Cloud.Shared\K8Cloud.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Consumers\" />
   </ItemGroup>
 
 </Project>

@@ -9,6 +9,12 @@ using System.Text.RegularExpressions;
 
 namespace K8Cloud.Shared.GraphQL;
 
+/// <summary>
+/// Queryable string invariant contains handler.
+/// </summary>
+/// <remarks>
+/// It work only with PostgreSQL.
+/// </remarks>
 public class QueryableStringInvariantContainsHandler : QueryableStringOperationHandler
 {
     private static readonly Regex sWhitespace = new Regex(@"\s+");
@@ -21,6 +27,7 @@ public class QueryableStringInvariantContainsHandler : QueryableStringOperationH
 
     protected override int Operation => ExtendedFilterOperations.ContainsInvariant;
 
+    /// <inheritdoc />
     public override Expression HandleOperation(
         QueryableFilterContext context,
         IFilterOperationField field,

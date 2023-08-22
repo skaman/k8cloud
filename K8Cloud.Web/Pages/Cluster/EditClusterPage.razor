@@ -5,7 +5,7 @@
 
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
-<UseEditClusterQuery Id="@Id" Strategy="ExecutionStrategy.CacheAndNetwork" Context="result">
+<UseEditClusterQuery ClusterId="@Id" Strategy="ExecutionStrategy.CacheAndNetwork" Context="result">
     <ChildContent>
         <K8PageHeader Title="@($"Edit {result.ClusterById.ServerName}")"
                     Description="Edit the configuration for your your kubernetes clusters."

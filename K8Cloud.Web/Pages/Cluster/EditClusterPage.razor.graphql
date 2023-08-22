@@ -1,5 +1,5 @@
-query EditClusterQuery($id: UUID!) {
-  clusterById(id: $id) {
+query EditClusterQuery($clusterId: UUID!) {
+  clusterById(clusterId: $clusterId) {
     id
     serverName
     serverAddress
@@ -12,8 +12,8 @@ query EditClusterQuery($id: UUID!) {
   }
 }
 
-mutation UpdateCluster($id: UUID!, $data: ClusterDataInput!, $version: String!) {
-  updateCluster(input: { clusterId: $id, data: $data, version: $version }) {
+mutation UpdateCluster($clusterId: UUID!, $data: ClusterDataInput!, $version: String!) {
+  updateCluster(input: { clusterId: $clusterId, data: $data, version: $version }) {
     clusterResource {
       id
     }
@@ -24,9 +24,9 @@ mutation UpdateCluster($id: UUID!, $data: ClusterDataInput!, $version: String!) 
   }
 }
 
-mutation ValidateUpdateCluster($id: UUID!, $data: ClusterDataInput!) {
+mutation ValidateUpdateCluster($clusterId: UUID!, $data: ClusterDataInput!) {
   validateUpdateCluster(
-    input: { clusterId: $id, data: $data }
+    input: { clusterId: $clusterId, data: $data }
   ) {
     validationResult {
       ...ValidationFragment

@@ -4,11 +4,14 @@ using K8Cloud.Kubernetes.Entities;
 
 namespace K8Cloud.Kubernetes.Mappers;
 
+/// <summary>
+/// AutoMapper profile for cluster.
+/// </summary>
 internal class ClusterProfile : Profile
 {
     public ClusterProfile()
     {
-        CreateMap<Cluster, ClusterData>();
-        CreateMap<Cluster, ClusterResource>();
+        CreateMap<ClusterEntity, ClusterData>().ReverseMap();
+        CreateMap<ClusterEntity, ClusterResource>();
     }
 }

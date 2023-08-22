@@ -4,6 +4,9 @@ using k8s.Models;
 
 namespace K8Cloud.Kubernetes.Mappers;
 
+/// <summary>
+/// AutoMapper profile for node.
+/// </summary>
 internal class NodeProfile : Profile
 {
     private const string RoleLabelPrefix = "node-role.kubernetes.io/";

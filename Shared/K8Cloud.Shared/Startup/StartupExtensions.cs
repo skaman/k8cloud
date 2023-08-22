@@ -45,6 +45,10 @@ public static class StartupExtensions
         });
     }
 
+    /// <summary>
+    /// Migrates the database.
+    /// </summary>
+    /// <param name="serviceProvider">Service provider.</param>
     public static void MigrateDatabase(this IServiceProvider serviceProvider)
     {
         var scope = serviceProvider.CreateScope();
@@ -52,6 +56,10 @@ public static class StartupExtensions
         dbContext.Database.Migrate();
     }
 
+    /// <summary>
+    /// Adds the shared services.
+    /// </summary>
+    /// <param name="services"></param>
     public static void AddSharedServices(this IServiceCollection services)
     {
         //services.AddSingleton<TrackingService>();

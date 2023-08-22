@@ -1,12 +1,17 @@
-﻿using K8Cloud.Kubernetes.Database;
-using K8Cloud.Shared.Database;
+﻿using K8Cloud.Shared.Database;
 using k8s.KubeConfigModels;
 using k8s;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
+using K8Cloud.Kubernetes.Extensions;
 
 namespace K8Cloud.Kubernetes.Services;
 
+/// <summary>
+/// Manage the Kubernetes clients.
+/// Keep a local cache with allocated clients to avoid creating a new client for each request.
+/// TODO: need to remove unused clients after a while of inactivity.
+/// </summary>
 internal class KubernetesClientsService
 {
     private readonly IServiceProvider _serviceProvider;
@@ -18,11 +23,21 @@ internal class KubernetesClientsService
         _serviceProvider = serviceProvider;
     }
 
+    /// <summary>
+    /// Get a client for the given cluster.
+    /// </summary>
+    /// <param name="clusterId">Cluster ID.</param>
+    /// <returns>Kubernetes client.</returns>
     public k8s.Kubernetes GetClient(Guid clusterId)
     {
-        return _clients.GetOrAdd(clusterId, CreateClient); // TODO: remove unused clients after a while
+        return _clients.GetOrAdd(clusterId, CreateClient);
     }
 
+    /// <summary>
+    /// Create a new client for the given cluster.
+    /// </summary>
+    /// <param name="clusterId">Cluster ID.</param>
+    /// <returns>Kubernetes client.</returns>
     private k8s.Kubernetes CreateClient(Guid guid)
     {
         var scope = _serviceProvider.CreateScope();

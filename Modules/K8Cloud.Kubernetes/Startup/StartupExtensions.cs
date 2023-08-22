@@ -25,11 +25,15 @@ public static class StartupExtensions
         IConfiguration configuration
     )
     {
-        //services.AddScoped<AddClusterValidator>();
+        // validators
         services.AddScoped<ClusterDataValidator>();
+        services.AddScoped<NamespaceDataValidator>();
 
+        // other scoped services
         services.AddScoped<ClusterService>();
+        services.AddScoped<NamespaceService>();
 
+        // singleton services
         services.AddSingleton<KubernetesClientsService>();
     }
 
@@ -39,11 +43,6 @@ public static class StartupExtensions
     /// <param name="busConfigurator">MassTransit bus configurator.</param>
     public static void ConfigureKubernetesBus(this IBusRegistrationConfigurator busConfigurator)
     {
-        //busConfigurator.AddConsumer<AddClusterConsumer>();
-        //busConfigurator.AddConsumer<ListNodesConsumer>();
-        //busConfigurator.AddConsumer<ListClusterSummariesConsumer>();
-        //busConfigurator.AddConsumer<GetClusterSummaryConsumer>();
-        //busConfigurator.AddConsumer<GetClusterDataConsumer>();
         //busConfigurator
         //    .AddSagaStateMachine<ClusterStateMachine, ClusterState>()
         //    .EntityFrameworkRepository(r =>
@@ -60,19 +59,18 @@ public static class StartupExtensions
     /// <param name="modelBuilder">Entity Framework model builder.</param>
     public static void ConfigureKubernetesTables(this ModelBuilder modelBuilder)
     {
-        var clusterEntity = modelBuilder.Entity<Cluster>().ToTable("KubernetsClusters");
+        var clusterEntity = modelBuilder.Entity<ClusterEntity>().ToTable("KubernetsClusters");
         clusterEntity.HasIndex(x => x.ServerName).IsUnique();
-        //clusterEntity.Property(p => p.Version).IsRowVersion();
 
-        //var sendCommandState = modelBuilder.Entity<ClusterState>().ToTable("KubernetsClusters");
-        //sendCommandState.HasKey(x => x.CorrelationId);
-        //sendCommandState.Property(x => x.CorrelationId).HasColumnName("Id").ValueGeneratedNever();
-        //sendCommandState.Property(x => x.CurrentState).HasMaxLength(64).IsRequired();
+        var namespaceEntity = modelBuilder.Entity<NamespaceEntity>().ToTable("KubernetsNamespaces");
+        namespaceEntity.HasIndex(x => new { x.Id, x.ClusterId });
+        namespaceEntity.HasIndex(x => x.Name).IsUnique();
     }
 
     public static void ConfigureKubernetesAutoMapper(this IMapperConfigurationExpression config)
     {
         config.AddProfile<ClusterProfile>();
+        config.AddProfile<NamespaceProfile>();
         config.AddProfile<NodeProfile>();
     }
 }

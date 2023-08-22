@@ -1,7 +1,7 @@
 ﻿@page "/clusters/{id:guid}"
 @inject ISnackbar Snackbar
 
-<UseShowClusterQuery Id="@Id" Strategy="ExecutionStrategy.CacheAndNetwork" Context="result">
+<UseShowClusterQuery ClusterId="@Id" Strategy="ExecutionStrategy.CacheAndNetwork" Context="result">
     <ChildContent>
         <K8PageHeader Title="@result.ClusterById.ServerName"
                       Description="Show the nodes and related status for your kubernetes clusters."
