@@ -11,6 +11,11 @@ public record NamespaceResource : NamespaceData
     public required Guid Id { get; init; }
 
     /// <summary>
+    /// Cluster resource ID.
+    /// </summary>
+    public required Guid ClusterId { get; init; }
+
+    /// <summary>
     /// Resource created at.
     /// </summary>
     public required DateTime CreatedAt { get; init; }

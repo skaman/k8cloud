@@ -8,12 +8,12 @@ namespace K8Cloud.Contracts.Kubernetes.Events;
 public record ClusterDeleted
 {
     /// <summary>
-    /// Cluster ID.
-    /// </summary>
-    public required Guid ClusterId { get; init; }
-
-    /// <summary>
     /// Cluster resource.
     /// </summary>
     public required ClusterResource Resource { get; init; }
+
+    /// <summary>
+    /// Event timestamp.
+    /// </summary>
+    public required DateTime Timestamp { get; init; }
 }

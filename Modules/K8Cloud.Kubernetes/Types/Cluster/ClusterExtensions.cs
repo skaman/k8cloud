@@ -19,18 +19,18 @@ internal class ClusterExtensions
     /// </summary>
     /// <param name="clusterRecord">Cluster record.</param>
     /// <param name="logger">Logger.</param>
-    /// <param name="clusterService">Cluster service.</param>
+    /// <param name="kubernetesService">Kubernetes service.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     public async Task<ClusterResourceStatus?> GetStatus(
         [Parent] ClusterResource clusterRecord,
         [Service] ILogger<ClusterExtensions> logger,
-        [Service] ClusterService clusterService,
+        [Service] KubernetesService kubernetesService,
         CancellationToken cancellationToken
     )
     {
         try
         {
-            return await clusterService
+            return await kubernetesService
                 .GetStatusAsync(clusterRecord.Id, cancellationToken)
                 .ConfigureAwait(false);
         }

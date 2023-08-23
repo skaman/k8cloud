@@ -5,11 +5,8 @@ using K8Cloud.Kubernetes.Entities;
 using K8Cloud.Kubernetes.Extensions;
 using K8Cloud.Kubernetes.Validators;
 using K8Cloud.Shared.Database;
-using k8s;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
 
 namespace K8Cloud.Kubernetes.Services;
 
@@ -18,30 +15,22 @@ namespace K8Cloud.Kubernetes.Services;
 /// </summary>
 internal class ClusterService
 {
-    private static TimeSpan CacheExpiration = TimeSpan.FromSeconds(30);
-
     private readonly K8CloudDbContext _dbContext;
     private readonly ClusterDataValidator _clusterDataValidator;
-    private readonly KubernetesClientsService _kubernetesClientsService;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
-    private readonly IDistributedCache _cache;
 
     public ClusterService(
         K8CloudDbContext dbContext,
         ClusterDataValidator clusterDataValidator,
-        KubernetesClientsService kubernetesClientsService,
         IPublishEndpoint publishEndpoint,
-        IMapper mapper,
-        IDistributedCache cache
+        IMapper mapper
     )
     {
         _dbContext = dbContext;
         _clusterDataValidator = clusterDataValidator;
-        _kubernetesClientsService = kubernetesClientsService;
         _publishEndpoint = publishEndpoint;
         _mapper = mapper;
-        _cache = cache;
     }
 
     /// <summary>
@@ -72,11 +61,7 @@ internal class ClusterService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new ClusterCreated
-                {
-                    ClusterId = cluster.Id,
-                    Resource = _mapper.Map<ClusterResource>(cluster)
-                },
+                new ClusterCreated { Resource = _mapper.Map<ClusterResource>(cluster) },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -142,11 +127,7 @@ internal class ClusterService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new ClusterUpdated
-                {
-                    ClusterId = cluster.Id,
-                    Resource = _mapper.Map<ClusterResource>(cluster)
-                },
+                new ClusterUpdated { Resource = _mapper.Map<ClusterResource>(cluster) },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -198,11 +179,7 @@ internal class ClusterService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new ClusterDeleted
-                {
-                    ClusterId = cluster.Id,
-                    Resource = _mapper.Map<ClusterResource>(cluster)
-                },
+                new ClusterDeleted { Resource = _mapper.Map<ClusterResource>(cluster) },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -211,65 +188,5 @@ internal class ClusterService
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return cluster;
-    }
-
-    /// <summary>
-    /// Get the status of the cluster.
-    /// The status is requested from the cluster and cached for 30 seconds.
-    /// </summary>
-    /// <param name="clusterId">Cluster ID.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>Cluster status.</returns>
-    public async Task<ClusterResourceStatus> GetStatusAsync(
-        Guid clusterId,
-        CancellationToken cancellationToken = default
-    )
-    {
-        // try to get the status from the cache
-        var key = $"clusterStatus:{clusterId}";
-        var cacheValue = await _cache.GetStringAsync(key, cancellationToken).ConfigureAwait(false);
-        if (!string.IsNullOrEmpty(cacheValue))
-        {
-            var deserializedData = JsonSerializer.Deserialize<ClusterResourceStatus>(cacheValue);
-            if (deserializedData != null)
-            {
-                return deserializedData;
-            }
-        }
-
-        // get the status from the cluster
-        var client = _kubernetesClientsService.GetClient(clusterId);
-        var response = await client.CoreV1
-            .ListNodeAsync(cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var nodes = _mapper.Map<NodeInfo[]>(response.Items);
-
-        var status = new ClusterResourceStatus
-        {
-            IsOperative = !Array.Exists(
-                nodes,
-                node =>
-                    Array.Exists(
-                        node.Conditions,
-                        condition => condition.Type == "Ready" && !condition.IsOperative
-                    )
-            ),
-            Nodes = nodes
-        };
-
-        // update the cache
-        await _cache
-            .SetStringAsync(
-                key,
-                JsonSerializer.Serialize(status),
-                new DistributedCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = CacheExpiration
-                },
-                cancellationToken
-            )
-            .ConfigureAwait(false);
-
-        return status;
     }
 }

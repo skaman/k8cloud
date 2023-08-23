@@ -30,6 +30,7 @@ public static class StartupExtensions
         services.AddScoped<NamespaceDataValidator>();
 
         // other scoped services
+        services.AddScoped<KubernetesService>();
         services.AddScoped<ClusterService>();
         services.AddScoped<NamespaceService>();
 

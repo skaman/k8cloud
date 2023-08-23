@@ -3,14 +3,14 @@
 namespace K8Cloud.Contracts.Kubernetes.Events;
 
 /// <summary>
-/// Cluster created event.
+/// Namespace sync request event.
 /// </summary>
-public record ClusterCreated
+public record NamespaceSync
 {
     /// <summary>
-    /// Cluster resource.
+    /// Namespace resource.
     /// </summary>
-    public required ClusterResource Resource { get; init; }
+    public required NamespaceResource Resource { get; init; }
 
     /// <summary>
     /// Event timestamp.

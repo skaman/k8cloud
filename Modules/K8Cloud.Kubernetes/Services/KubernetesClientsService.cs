@@ -38,11 +38,11 @@ internal class KubernetesClientsService
     /// </summary>
     /// <param name="clusterId">Cluster ID.</param>
     /// <returns>Kubernetes client.</returns>
-    private k8s.Kubernetes CreateClient(Guid guid)
+    private k8s.Kubernetes CreateClient(Guid clusterId)
     {
         var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<K8CloudDbContext>();
-        var cluster = dbContext.ClustersReadOnly().Single(x => x.Id == guid);
+        var cluster = dbContext.ClustersReadOnly().Single(x => x.Id == clusterId);
         var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(
             new K8SConfiguration
             {

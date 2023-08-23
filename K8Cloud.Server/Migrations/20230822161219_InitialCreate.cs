@@ -57,6 +57,22 @@ namespace K8Cloud.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KubernetsNamespaces",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClusterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    xmin = table.Column<uint>(type: "xid", rowVersion: true, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KubernetsNamespaces", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OutboxMessage",
                 columns: table => new
                 {
@@ -116,6 +132,17 @@ namespace K8Cloud.Server.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_KubernetsNamespaces_Id_ClusterId",
+                table: "KubernetsNamespaces",
+                columns: new[] { "Id", "ClusterId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KubernetsNamespaces_Name",
+                table: "KubernetsNamespaces",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OutboxMessage_EnqueueTime",
                 table: "OutboxMessage",
                 column: "EnqueueTime");
@@ -151,6 +178,9 @@ namespace K8Cloud.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "KubernetsClusters");
+
+            migrationBuilder.DropTable(
+                name: "KubernetsNamespaces");
 
             migrationBuilder.DropTable(
                 name: "OutboxMessage");

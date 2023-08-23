@@ -3,7 +3,7 @@
 namespace K8Cloud.Shared.Validators;
 
 /// <summary>
-/// Extension methods for <see cref="Rfc1123Validator{T}"/>.
+/// Extension methods for <see cref="Rfc1035Validator{T}"/>.
 /// </summary>
 public static class Rfc1035ValidatorExtensions
 {

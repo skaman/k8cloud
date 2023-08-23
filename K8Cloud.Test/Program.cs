@@ -1,7 +1,7 @@
 ﻿using k8s;
+using k8s.Autorest;
 using k8s.KubeConfigModels;
 using k8s.Models;
-using System.Text.Json;
 
 //var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
 var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(
@@ -63,10 +63,35 @@ var nodes = await client.CoreV1.ListNodeAsync();
 //}
 //
 
-var labels = new Dictionary<string, string> { { "k8cloud.io/metadata.id", Guid.NewGuid().ToString() } };
-var znamespace = await client.CoreV1.CreateNamespaceAsync(
-    new V1Namespace { Metadata = new V1ObjectMeta { Name = "test2", Labels = labels } }
-);
+var labels = new Dictionary<string, string>
+{
+    { "k8cloud.io/metadata.id", Guid.NewGuid().ToString() }
+};
+
+//var znamespace = await client.CoreV1.CreateNamespaceAsync(
+//    new V1Namespace
+//    {
+//        Metadata = new V1ObjectMeta { Name = "test3", Labels = labels }
+//    }
+//);
+try
+{
+    var res = await client.CoreV1.ReadNamespaceAsync("test3");
+}
+catch (HttpOperationException e)
+{
+    var returnMessage = KubernetesJson.Deserialize<V1Status>(e.Response.Content);
+    Console.WriteLine(e.Message);
+    Console.WriteLine(e.Response.StatusCode);
+}
+catch (KubernetesException e)
+{
+    Console.WriteLine(e.Message);
+}
+catch (Exception e)
+{
+    Console.WriteLine(e.Message);
+}
 
 var pods = await client.CoreV1.ListNamespaceAsync();
 foreach (var pod in pods.Items)
