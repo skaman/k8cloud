@@ -1,28 +1,16 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using K8Cloud.Contracts.Kubernetes.Data;
-using K8Cloud.Contracts.Kubernetes.Events;
-using K8Cloud.Kubernetes.Exceptions;
-using K8Cloud.Kubernetes.Extensions;
+﻿using K8Cloud.Kubernetes.Exceptions;
 using K8Cloud.Kubernetes.Services;
-using K8Cloud.Shared.Utils;
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 
 namespace K8Cloud.Kubernetes.StateMachines.Namespace;
 
-internal class NamespaceSyncActivity : IStateMachineActivity<NamespaceSyncState>
+internal class NamespaceSyncCreateOrUpdateActivity : IStateMachineActivity<NamespaceSyncState>
 {
-    private const int MaxRetryCount = 10;
-    private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(5);
-
     private readonly KubernetesService _kubernetesService;
-    private readonly IMapper _mapper;
 
-    public NamespaceSyncActivity(KubernetesService kubernetesService, IMapper mapper)
+    public NamespaceSyncCreateOrUpdateActivity(KubernetesService kubernetesService)
     {
         _kubernetesService = kubernetesService;
-        _mapper = mapper;
     }
 
     /// <inheritdoc />
@@ -51,7 +39,8 @@ internal class NamespaceSyncActivity : IStateMachineActivity<NamespaceSyncState>
     public async Task Execute<T>(
         BehaviorContext<NamespaceSyncState, T> context,
         IBehavior<NamespaceSyncState, T> next
-    ) where T : class
+    )
+        where T : class
     {
         await Process(context).ConfigureAwait(false);
         await next.Execute(context).ConfigureAwait(false);
@@ -61,7 +50,8 @@ internal class NamespaceSyncActivity : IStateMachineActivity<NamespaceSyncState>
     public Task Faulted<TException>(
         BehaviorExceptionContext<NamespaceSyncState, TException> context,
         IBehavior<NamespaceSyncState> next
-    ) where TException : Exception
+    )
+        where TException : Exception
     {
         return next.Faulted(context);
     }
@@ -84,33 +74,23 @@ internal class NamespaceSyncActivity : IStateMachineActivity<NamespaceSyncState>
             return;
         }
 
-        var resource = context.Saga.ResourceToSync;
-
         try
         {
             await _kubernetesService
                 .CreateOrUpdateNamespaceAsync(context.Saga.ResourceToSync)
                 .ConfigureAwait(false);
-            context.AddOrUpdatePayload(() => resource, _ => resource);
+            context.Saga.VersionSynced = context.Saga.ResourceToSync.Version;
+            context.Saga.UpdatedAtSynced = context.Saga.ResourceToSync.UpdatedAt;
+            context.Saga.ResourceToSync = null;
+            context.Saga.RetryCount = 0;
+            context.Saga.ErrorCode = null;
+            context.Saga.ErrorMessage = null;
         }
         catch (KubernetesException ex)
         {
-            context.AddOrUpdatePayload(() => ex.Status, _ => ex.Status);
-
-            if (context.Saga.RetryCount > MaxRetryCount)
-            {
-                await context.SchedulePublish(
-                    ExponentialRetry.GetDelay(RetryDelay, context.Saga.RetryCount),
-                    new NamespaceSyncError { Resource = resource, Status = ex.Status }
-                );
-            }
-            else
-            {
-                await context.SchedulePublish(
-                    TimeSpan.FromSeconds(5),
-                    new NamespaceSyncRetry { Resource = resource }
-                );
-            }
+            context.Saga.RetryCount++;
+            context.Saga.ErrorCode = ex.Status.Code;
+            context.Saga.ErrorMessage = ex.Status.Message;
         }
     }
 }

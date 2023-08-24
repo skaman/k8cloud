@@ -103,9 +103,9 @@ internal class KubernetesService
         }
     }
 
-    public async Task CreateNamespaceAsync(Guid clusterId, NamespaceResource resource)
+    public async Task CreateNamespaceAsync(NamespaceResource resource)
     {
-        var client = _kubernetesClientsService.GetClient(clusterId);
+        var client = _kubernetesClientsService.GetClient(resource.ClusterId);
         var @namespace = _mapper.Map<V1Namespace>(resource);
 
         try
@@ -170,11 +170,11 @@ internal class KubernetesService
 
         if (needCreate)
         {
-            await CreateNamespaceAsync(resource.ClusterId, resource).ConfigureAwait(false);
+            await CreateNamespaceAsync(resource).ConfigureAwait(false);
         }
         else
         {
-            await UpdateNamespaceAsync(resource.ClusterId, resource).ConfigureAwait(false);
+            await UpdateNamespaceAsync(resource).ConfigureAwait(false);
         }
     }
 }

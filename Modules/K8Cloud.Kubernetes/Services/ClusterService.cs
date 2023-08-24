@@ -61,7 +61,11 @@ internal class ClusterService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new ClusterCreated { Resource = _mapper.Map<ClusterResource>(cluster) },
+                new ClusterCreated
+                {
+                    Resource = _mapper.Map<ClusterResource>(cluster),
+                    Timestamp = DateTime.UtcNow
+                },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -127,7 +131,11 @@ internal class ClusterService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new ClusterUpdated { Resource = _mapper.Map<ClusterResource>(cluster) },
+                new ClusterUpdated
+                {
+                    Resource = _mapper.Map<ClusterResource>(cluster),
+                    Timestamp = DateTime.UtcNow
+                },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -179,7 +187,11 @@ internal class ClusterService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new ClusterDeleted { Resource = _mapper.Map<ClusterResource>(cluster) },
+                new ClusterDeleted
+                {
+                    Resource = _mapper.Map<ClusterResource>(cluster),
+                    Timestamp = DateTime.UtcNow
+                },
                 cancellationToken
             )
             .ConfigureAwait(false);

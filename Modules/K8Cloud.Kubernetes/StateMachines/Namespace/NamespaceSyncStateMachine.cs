@@ -9,15 +9,22 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
     private const int MaxRetryCount = 10;
     private static readonly TimeSpan RetryDelay = TimeSpan.FromSeconds(5);
 
-    public State Idle { get; private set; } = null!;
-    public State Syncing { get; private set; } = null!;
-    public State SyncError { get; private set; } = null!;
+    public State Idle { get; private set; } = default!;
+    public State Syncing { get; private set; } = default!;
+    public State SyncError { get; private set; } = default!;
 
-    public Event<NamespaceCreated> NamespaceCreated { get; private set; } = null!;
-    public Event<NamespaceUpdated> NamespaceUpdated { get; private set; } = null!;
-    public Event<NamespaceDeleted> NamespaceDeleted { get; private set; } = null!;
-    public Event<NamespaceSync> NamespaceSync { get; private set; } = null!;
-    public Event<NamespaceSyncRetry> NamespaceSyncRetry { get; private set; } = null!;
+    public Event<NamespaceCreated> NamespaceCreated { get; private set; } = default!;
+    public Event<NamespaceUpdated> NamespaceUpdated { get; private set; } = default!;
+    public Event<NamespaceDeleted> NamespaceDeleted { get; private set; } = default!;
+    public Event<NamespaceSync> NamespaceSync { get; private set; } = default!;
+
+    //public Event<NamespaceSyncRetry> NamespaceSyncRetry { get; private set; } = default!;
+
+    public Schedule<NamespaceSyncState, NamespaceSyncRetry> NamespaceSyncRetry
+    {
+        get;
+        private set;
+    } = default!;
 
     //public Schedule<ClusterState, RequestClusterStatus> RequestClusterStatus { get; private set; } =
     //    null!;
@@ -30,7 +37,16 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
         Event(() => NamespaceUpdated, e => e.CorrelateById(x => x.Message.Resource.Id));
         Event(() => NamespaceDeleted, e => e.CorrelateById(x => x.Message.Resource.Id));
         Event(() => NamespaceSync, e => e.CorrelateById(x => x.Message.Resource.Id));
-        Event(() => NamespaceSyncRetry, e => e.CorrelateById(x => x.Message.Resource.Id));
+
+        Schedule(
+            () => NamespaceSyncRetry,
+            instance => instance.NamespaceSyncRetryTokenId,
+            s =>
+            {
+                s.Delay = RetryDelay;
+                s.Received = r => r.CorrelateById(x => x.Message.Resource.Id);
+            }
+        );
 
         SetCompletedWhenFinalized();
 
@@ -74,7 +90,7 @@ internal static class NamespaceSyncStateMachineExtensions
         this EventActivityBinder<NamespaceSyncState> context
     )
     {
-        return context.Activity(x => x.OfType<NamespaceSyncActivity>());
+        return context.Activity(x => x.OfType<NamespaceSyncCreateOrUpdateActivity>());
     }
 
     public static bool IsSyncSuccess(this BehaviorContext<NamespaceSyncState> context)
@@ -115,7 +131,8 @@ internal static class NamespaceSyncStateMachineExtensions
 
     public static EventActivityBinder<NamespaceSyncState, T> ClearRetryCount<T>(
         this EventActivityBinder<NamespaceSyncState, T> context
-    ) where T : class
+    )
+        where T : class
     {
         return context.Then(x =>
         {
@@ -148,7 +165,8 @@ internal static class NamespaceSyncStateMachineExtensions
 
     public static EventActivityBinder<NamespaceSyncState, T> ClearErrors<T>(
         this EventActivityBinder<NamespaceSyncState, T> context
-    ) where T : class
+    )
+        where T : class
     {
         return context.Then(x =>
         {

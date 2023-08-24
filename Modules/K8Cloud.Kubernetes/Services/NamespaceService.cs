@@ -65,7 +65,11 @@ internal class NamespaceService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new NamespaceCreated { Resource = _mapper.Map<NamespaceResource>(@namespace) },
+                new NamespaceCreated
+                {
+                    Resource = _mapper.Map<NamespaceResource>(@namespace),
+                    Timestamp = DateTime.UtcNow
+                },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -137,7 +141,11 @@ internal class NamespaceService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new NamespaceCreated { Resource = _mapper.Map<NamespaceResource>(@namespace) },
+                new NamespaceCreated
+                {
+                    Resource = _mapper.Map<NamespaceResource>(@namespace),
+                    Timestamp = DateTime.UtcNow
+                },
                 cancellationToken
             )
             .ConfigureAwait(false);
@@ -194,7 +202,11 @@ internal class NamespaceService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new NamespaceDeleted { Resource = _mapper.Map<NamespaceResource>(@namespace) },
+                new NamespaceDeleted
+                {
+                    Resource = _mapper.Map<NamespaceResource>(@namespace),
+                    Timestamp = DateTime.UtcNow
+                },
                 cancellationToken
             )
             .ConfigureAwait(false);
