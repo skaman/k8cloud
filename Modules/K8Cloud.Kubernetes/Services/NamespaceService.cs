@@ -61,8 +61,9 @@ internal class NamespaceService
         @namespace.Id = NewId.NextGuid();
         @namespace.ClusterId = clusterId;
         await _dbContext.AddAsync(@namespace, cancellationToken).ConfigureAwait(false);
+
+        // save for retrieve version and dates
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
-        //@namespace = _dbContext.Namespaces().Single(x => x.Id == @namespace.Id);
 
         // publish the event
         await _publishEndpoint
@@ -76,7 +77,7 @@ internal class NamespaceService
             )
             .ConfigureAwait(false);
 
-        // save the changes
+        // save for events in the outbox
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return @namespace;
@@ -140,6 +141,9 @@ internal class NamespaceService
 
         _dbContext.Update(@namespace);
 
+        // save for retrieve version and dates
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         // publish the event
         await _publishEndpoint
             .Publish(
@@ -152,7 +156,7 @@ internal class NamespaceService
             )
             .ConfigureAwait(false);
 
-        // save the changes
+        // save for events in the outbox
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return @namespace;

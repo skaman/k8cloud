@@ -1,4 +1,5 @@
 ﻿using K8Cloud.Kubernetes.Entities;
+using K8Cloud.Kubernetes.StateMachines.Namespace;
 using K8Cloud.Shared.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,4 +41,13 @@ internal static class DatabaseExtensions
     /// <returns>Namespaces queryable.</returns>
     public static IQueryable<NamespaceEntity> NamespacesReadOnly(this K8CloudDbContext dbContext) =>
         dbContext.Set<NamespaceEntity>().AsNoTracking().AsQueryable();
+
+    /// <summary>
+    /// Get the namespaces sync state queryable for read-only operations.
+    /// </summary>
+    /// <param name="dbContext">Database context.</param>
+    /// <returns>Namespaces queryable.</returns>
+    public static IQueryable<NamespaceSyncState> NamespaceSyncStatesReadOnly(
+        this K8CloudDbContext dbContext
+    ) => dbContext.Set<NamespaceSyncState>().AsNoTracking().AsQueryable();
 }

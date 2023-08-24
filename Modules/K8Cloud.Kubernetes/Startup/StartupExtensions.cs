@@ -78,6 +78,9 @@ public static class StartupExtensions
             .Entity<NamespaceSyncState>()
             .ToTable("KubernetsNamespaceSyncState");
         namespaceSyncStateEntity.HasKey(x => x.CorrelationId);
+        namespaceSyncStateEntity.Property(p => p.InSyncResouce).HasColumnType("jsonb");
+        namespaceSyncStateEntity.Property(p => p.SyncedResouce).HasColumnType("jsonb");
+        namespaceSyncStateEntity.Property(p => p.ErrorStatus).HasColumnType("jsonb");
     }
 
     public static void ConfigureKubernetesAutoMapper(this IMapperConfigurationExpression config)

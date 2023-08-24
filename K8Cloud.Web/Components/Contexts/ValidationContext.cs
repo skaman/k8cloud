@@ -126,8 +126,8 @@ public sealed class ValidationContext
                     continue;
                 }
 
-                var identifier = new FieldIdentifier(model, error.PropertyName!);
-                _validationMessageStore.Add(identifier, error.ErrorMessage!);
+                var identifier = new FieldIdentifier(model, error!.PropertyName!);
+                _validationMessageStore.Add(identifier, error!.ErrorMessage!);
             }
         }
 

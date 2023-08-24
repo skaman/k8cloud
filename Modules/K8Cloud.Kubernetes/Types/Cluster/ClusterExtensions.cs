@@ -1,11 +1,7 @@
-﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using HotChocolate;
+﻿using HotChocolate;
 using HotChocolate.Types;
 using K8Cloud.Contracts.Kubernetes.Data;
-using K8Cloud.Kubernetes.Extensions;
 using K8Cloud.Kubernetes.Services;
-using K8Cloud.Shared.Database;
 using Microsoft.Extensions.Logging;
 
 namespace K8Cloud.Kubernetes.Types.Cluster;
@@ -38,23 +34,5 @@ internal class ClusterExtensions
             logger.LogError(ex, "Failed to get cluster status");
             return null;
         }
-    }
-
-    /// <summary>
-    /// Namespaces.
-    /// </summary>
-    /// <param name="clusterRecord">Cluster record.</param>
-    /// <param name="dbContext">Database context.</param>
-    /// <param name="mapper">Mapper.</param>
-    public IQueryable<NamespaceResource> GetNamespaces(
-        [Parent] ClusterResource clusterRecord,
-        K8CloudDbContext dbContext,
-        [Service] IMapper mapper
-    )
-    {
-        return dbContext
-            .NamespacesReadOnly()
-            .Where(x => x.ClusterId == clusterRecord.Id)
-            .ProjectTo<NamespaceResource>(mapper.ConfigurationProvider);
     }
 }

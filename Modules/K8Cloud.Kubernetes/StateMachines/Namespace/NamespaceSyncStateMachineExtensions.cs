@@ -202,34 +202,40 @@ internal static class NamespaceSyncStateMachineExtensions
         where T : class, IEventWithResource<NamespaceResource>
     {
         return (
-                context.Saga.SyncedResouceTime == null
-                || context.Saga.SyncedResouceTime < context.Message.Resource.UpdatedAt
+                context.Saga.SyncedResouce == null
+                || (
+                    context.Saga.SyncedResouce.UpdatedAt < context.Message.Resource.UpdatedAt
+                    && context.Saga.SyncedResouce.Version != context.Message.Resource.Version
+                )
             )
             && (
-                context.Saga.InSyncResouceTime == null
-                || context.Saga.InSyncResouceTime < context.Message.Resource.UpdatedAt
+                context.Saga.InSyncResouce == null
+                || (
+                    context.Saga.InSyncResouce.UpdatedAt < context.Message.Resource.UpdatedAt
+                    && context.Saga.InSyncResouce.Version != context.Message.Resource.Version
+                )
             );
     }
 
-    public static EventActivityBinder<NamespaceSyncState, T> SaveInSyncResouceTime<T>(
+    public static EventActivityBinder<NamespaceSyncState, T> SaveInSyncResouce<T>(
         this EventActivityBinder<NamespaceSyncState, T> context
     )
         where T : class, IEventWithResource<NamespaceResource>
     {
         return context.Then(x =>
         {
-            x.Saga.InSyncResouceTime = x.Message.Resource.UpdatedAt;
+            x.Saga.InSyncResouce = x.Message.Resource;
         });
     }
 
-    public static EventActivityBinder<NamespaceSyncState, T> SaveSyncedResouceTime<T>(
+    public static EventActivityBinder<NamespaceSyncState, T> SaveSyncedResouce<T>(
         this EventActivityBinder<NamespaceSyncState, T> context
     )
         where T : class, IEventWithResource<NamespaceResource>
     {
         return context.Then(x =>
         {
-            x.Saga.SyncedResouceTime = x.Message.Resource.UpdatedAt;
+            x.Saga.SyncedResouce = x.Message.Resource;
         });
     }
 
@@ -239,8 +245,7 @@ internal static class NamespaceSyncStateMachineExtensions
     {
         return context.Then(x =>
         {
-            x.Saga.ErrorCode = x.Message.Status.Code;
-            x.Saga.ErrorMessage = x.Message.Status.Message;
+            x.Saga.ErrorStatus = x.Message.Status;
         });
     }
 
@@ -253,19 +258,22 @@ internal static class NamespaceSyncStateMachineExtensions
     {
         return context.Then(x =>
         {
-            x.Saga.ErrorCode = HttpStatusCode.RequestTimeout;
-            x.Saga.ErrorMessage = "Namespace deploy timeout";
+            x.Saga.ErrorStatus = new Status
+            {
+                Code = HttpStatusCode.RequestTimeout,
+                Message = "Internal event timeout"
+            };
         });
     }
 
-    public static EventActivityBinder<NamespaceSyncState, T> ClearInSyncResouceTime<T>(
+    public static EventActivityBinder<NamespaceSyncState, T> ClearInSyncResouce<T>(
         this EventActivityBinder<NamespaceSyncState, T> context
     )
         where T : class, IEventWithResource<NamespaceResource>
     {
         return context.Then(x =>
         {
-            x.Saga.InSyncResouceTime = null;
+            x.Saga.InSyncResouce = null;
         });
     }
 
@@ -291,15 +299,27 @@ internal static class NamespaceSyncStateMachineExtensions
         });
     }
 
-    public static EventActivityBinder<NamespaceSyncState, T> ClearErrors<T>(
+    public static EventActivityBinder<NamespaceSyncState, T> ClearErrorStatus<T>(
         this EventActivityBinder<NamespaceSyncState, T> context
     )
         where T : class
     {
         return context.Then(x =>
         {
-            x.Saga.ErrorCode = null;
-            x.Saga.ErrorMessage = null;
+            x.Saga.ErrorStatus = null;
+        });
+    }
+
+    public static EventActivityBinder<NamespaceSyncState> ClearAll(
+        this EventActivityBinder<NamespaceSyncState> context
+    )
+    {
+        return context.Then(x =>
+        {
+            x.Saga.RetryCount = 0;
+            x.Saga.ErrorStatus = null;
+            x.Saga.InSyncResouce = null;
+            x.Saga.SyncedResouce = null;
         });
     }
 }

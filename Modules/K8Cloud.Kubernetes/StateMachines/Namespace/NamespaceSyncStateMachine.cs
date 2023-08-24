@@ -52,7 +52,7 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
         // initiate saga
         Initially(
             When(NamespaceSync)
-                .SaveInSyncResouceTime()
+                .SaveInSyncResouce()
                 .PublishNamespaceDeploy()
                 .ScheduleNamespaceDeployTimeout(NamespaceDeployTimeout)
                 .TransitionTo(Syncing)
@@ -66,9 +66,9 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
             When(NamespaceSync)
                 .If(
                     x => x.CheckIfResourceIsNewer(),
-                    x => x.ClearErrors()
+                    x => x.ClearErrorStatus()
                           .ClearRetryCount()
-                          .SaveInSyncResouceTime()
+                          .SaveInSyncResouce()
                           .Unschedule(NamespaceDeployTimeout)
                           .PublishNamespaceDeploy()
                           .ScheduleNamespaceDeployTimeout(NamespaceDeployTimeout)
@@ -78,7 +78,7 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
             When(NamespaceSyncRetry)
                 .If(
                     x => x.CheckIfResourceIsNewer(),
-                    x => x.SaveInSyncResouceTime()
+                    x => x.SaveInSyncResouce()
                           .Unschedule(NamespaceDeployTimeout)
                           .PublishNamespaceDeploy()
                           .ScheduleNamespaceDeployTimeout(NamespaceDeployTimeout)
@@ -103,16 +103,16 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
 
             When(NamespaceDeployCompleted)
                 .If(
-                    x => x.Saga.InSyncResouceTime == x.Message.Resource.UpdatedAt,
-                    x => x.SaveSyncedResouceTime()
-                          .ClearInSyncResouceTime()
-                          .ClearErrors()
+                    x => x.Saga.InSyncResouce?.Version == x.Message.Resource.Version,
+                    x => x.SaveSyncedResouce()
+                          .ClearInSyncResouce()
+                          .ClearErrorStatus()
                           .ClearRetryCount()
                           .Unschedule(NamespaceDeployTimeout)
                           .IfElse(
                               x => x.Message.DeployType == DeployType.Delete,
-                              x => x.TransitionTo(Synced),
-                              x => x.TransitionTo(Deleted)
+                              x => x.TransitionTo(Deleted),
+                              x => x.TransitionTo(Synced)
                           )
                 ),
 
@@ -143,7 +143,7 @@ internal class NamespaceSyncStateMachine : MassTransitStateMachine<NamespaceSync
                 )
         );
 
-        WhenEnter(Deleted, x => x.Finalize());
+        WhenEnter(Deleted, x => x.ClearAll().Finalize());
     }
     // csharpier-ignore-end
 }

@@ -4,6 +4,7 @@ using K8Cloud.Contracts.Kubernetes.Data;
 using K8Cloud.Shared.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace K8Cloud.Server.Migrations
 {
     [DbContext(typeof(K8CloudDbContext))]
-    partial class K8CloudDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230824205905_ChangeStatusFieldInNamespaceSaga")]
+    partial class ChangeStatusFieldInNamespaceSaga
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

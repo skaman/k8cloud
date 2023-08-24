@@ -401,3 +401,6 @@ FodyWeavers.xsd
 *.db
 *.db-shm
 *.db-wal
+
+# MacOS DS_Store
+**/.DS_Store

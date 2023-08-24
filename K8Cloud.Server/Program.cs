@@ -38,6 +38,8 @@ builder.Services.AddAutoMapper(config =>
 // Add the MassTransit services.
 builder.Services.AddMassTransit(busConfigurator =>
 {
+    busConfigurator.SetKebabCaseEndpointNameFormatter();
+
     var schedulerEndpoint = new Uri("queue:scheduler");
     busConfigurator.AddMessageScheduler(schedulerEndpoint);
 

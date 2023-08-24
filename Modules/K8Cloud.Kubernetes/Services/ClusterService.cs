@@ -58,6 +58,9 @@ internal class ClusterService
         cluster.Id = NewId.NextGuid();
         await _dbContext.AddAsync(cluster, cancellationToken).ConfigureAwait(false);
 
+        // save for retrieve version and dates
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         // publish the event
         await _publishEndpoint
             .Publish(
@@ -70,7 +73,7 @@ internal class ClusterService
             )
             .ConfigureAwait(false);
 
-        // save the changes
+        // save for events in the outbox
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return cluster;
@@ -128,6 +131,9 @@ internal class ClusterService
 
         _dbContext.Update(cluster);
 
+        // save for retrieve version and dates
+        await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+
         // publish the event
         await _publishEndpoint
             .Publish(
@@ -140,7 +146,7 @@ internal class ClusterService
             )
             .ConfigureAwait(false);
 
-        // save the changes
+        // save for events in the outbox
         await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         return cluster;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using K8Cloud.Contracts.Kubernetes.Data;
 using K8Cloud.Kubernetes.Entities;
+using K8Cloud.Kubernetes.StateMachines.Namespace;
 using k8s.Models;
 
 namespace K8Cloud.Kubernetes.Mappers;
@@ -14,6 +15,10 @@ internal class NamespaceProfile : Profile
     {
         CreateMap<NamespaceEntity, NamespaceData>().ReverseMap();
         CreateMap<NamespaceEntity, NamespaceResource>();
+
+        CreateMap<NamespaceSyncState, SyncInfo>()
+            .ForMember(x => x.Status, opt => opt.MapFrom(src => src.CurrentState))
+            .ForMember(x => x.ErrorStatus, opt => opt.MapFrom(src => src.ErrorStatus));
 
         CreateMap<V1Namespace, NamespaceResource>()
             .ForMember(x => x.Id, opt => opt.MapFromLabels(MapConst.NamespaceId))
