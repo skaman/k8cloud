@@ -1,11 +1,12 @@
-﻿using K8Cloud.Contracts.Kubernetes.Data;
+﻿using K8Cloud.Contracts.Interfaces;
+using K8Cloud.Contracts.Kubernetes.Data;
 
 namespace K8Cloud.Contracts.Kubernetes.Events;
 
 /// <summary>
 /// Cluster deleted event.
 /// </summary>
-public record ClusterDeleted
+public record ClusterDeleted : IEventWithResource<ClusterResource>, ITimestamp
 {
     /// <summary>
     /// Cluster resource.

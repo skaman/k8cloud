@@ -6,7 +6,6 @@ using K8Cloud.Contracts.Kubernetes.Data;
 using K8Cloud.Kubernetes.Extensions;
 using K8Cloud.Kubernetes.Services;
 using K8Cloud.Shared.Database;
-using k8s.KubeConfigModels;
 using Microsoft.Extensions.Logging;
 
 namespace K8Cloud.Kubernetes.Types.Cluster;

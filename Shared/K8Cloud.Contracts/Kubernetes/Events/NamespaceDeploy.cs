@@ -5,9 +5,9 @@ using K8Cloud.Contracts.Kubernetes.Enums;
 namespace K8Cloud.Contracts.Kubernetes.Events;
 
 /// <summary>
-/// Namespace sync completed event.
+/// Request event to create or update a namespace on kubernetes.
 /// </summary>
-public record NamespaceSyncCompleted : IEventWithResource<NamespaceResource>, ITimestamp
+public record NamespaceDeploy : IEventWithResource<NamespaceResource>, ITimestamp
 {
     /// <summary>
     /// Deploy type.

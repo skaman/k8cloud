@@ -73,6 +73,24 @@ namespace K8Cloud.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KubernetsNamespaceSyncState",
+                columns: table => new
+                {
+                    CorrelationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CurrentState = table.Column<string>(type: "text", nullable: false),
+                    SyncedResouceTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    InSyncResouceTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    RetryCount = table.Column<int>(type: "integer", nullable: false),
+                    ErrorMessage = table.Column<string>(type: "text", nullable: true),
+                    ErrorCode = table.Column<int>(type: "integer", nullable: true),
+                    NamespaceDeployTimeoutTokenId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KubernetsNamespaceSyncState", x => x.CorrelationId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OutboxMessage",
                 columns: table => new
                 {
@@ -181,6 +199,9 @@ namespace K8Cloud.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "KubernetsNamespaces");
+
+            migrationBuilder.DropTable(
+                name: "KubernetsNamespaceSyncState");
 
             migrationBuilder.DropTable(
                 name: "OutboxMessage");

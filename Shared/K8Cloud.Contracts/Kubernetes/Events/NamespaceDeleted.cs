@@ -1,11 +1,12 @@
-﻿using K8Cloud.Contracts.Kubernetes.Data;
+﻿using K8Cloud.Contracts.Interfaces;
+using K8Cloud.Contracts.Kubernetes.Data;
 
 namespace K8Cloud.Contracts.Kubernetes.Events;
 
 /// <summary>
 /// Namespace deleted event.
 /// </summary>
-public record NamespaceDeleted
+public record NamespaceDeleted : IEventWithResource<NamespaceResource>, ITimestamp
 {
     /// <summary>
     /// Namespace resource.

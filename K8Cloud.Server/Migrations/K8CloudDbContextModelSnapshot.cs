@@ -111,6 +111,39 @@ namespace K8Cloud.Server.Migrations
                     b.ToTable("KubernetsNamespaces", (string)null);
                 });
 
+            modelBuilder.Entity("K8Cloud.Kubernetes.StateMachines.Namespace.NamespaceSyncState", b =>
+                {
+                    b.Property<Guid>("CorrelationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("CurrentState")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ErrorCode")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("InSyncResouceTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("NamespaceDeployTimeoutTokenId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("SyncedResouceTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("CorrelationId");
+
+                    b.ToTable("KubernetsNamespaceSyncState", (string)null);
+                });
+
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.InboxState", b =>
                 {
                     b.Property<long>("Id")

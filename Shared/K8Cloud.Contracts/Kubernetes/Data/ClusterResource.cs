@@ -1,9 +1,11 @@
-﻿namespace K8Cloud.Contracts.Kubernetes.Data;
+﻿using K8Cloud.Contracts.Interfaces;
+
+namespace K8Cloud.Contracts.Kubernetes.Data;
 
 /// <summary>
 /// Cluster resource.
 /// </summary>
-public record ClusterResource : ClusterData
+public record ClusterResource : ClusterData, IResource
 {
     /// <summary>
     /// Resource ID.

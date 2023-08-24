@@ -3,6 +3,7 @@
   mutation: Mutation
 }
 
+"Extended string operation filter input type."
 input StringOperationFilterInput {
   and: [StringOperationFilterInput!]
   or: [StringOperationFilterInput!]
@@ -146,6 +147,8 @@ input NamespaceResourceFilterInput {
   or: [NamespaceResourceFilterInput!]
   "Resource ID."
   id: UuidOperationFilterInput
+  "Cluster resource ID."
+  clusterId: UuidOperationFilterInput
   "Resource created at."
   createdAt: DateTimeOperationFilterInput
   "Resource updated at."
@@ -160,6 +163,8 @@ input NamespaceResourceFilterInput {
 input NamespaceResourceSortInput {
   "Resource ID."
   id: SortEnumType
+  "Cluster resource ID."
+  clusterId: SortEnumType
   "Resource created at."
   createdAt: SortEnumType
   "Resource updated at."
@@ -260,6 +265,8 @@ type ClusterResource {
 type NamespaceResource {
   "Resource ID."
   id: UUID!
+  "Cluster resource ID."
+  clusterId: UUID!
   "Resource created at."
   createdAt: DateTime!
   "Resource updated at."

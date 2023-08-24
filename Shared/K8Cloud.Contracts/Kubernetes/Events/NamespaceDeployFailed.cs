@@ -5,9 +5,9 @@ using K8Cloud.Contracts.Kubernetes.Enums;
 namespace K8Cloud.Contracts.Kubernetes.Events;
 
 /// <summary>
-/// Namespace sync completed event.
+/// Event to indicate that a namespace failed to create or update on kubernetes.
 /// </summary>
-public record NamespaceSyncCompleted : IEventWithResource<NamespaceResource>, ITimestamp
+public record NamespaceDeployFailed : IEventWithResource<NamespaceResource>, ITimestamp
 {
     /// <summary>
     /// Deploy type.
@@ -23,4 +23,9 @@ public record NamespaceSyncCompleted : IEventWithResource<NamespaceResource>, IT
     /// Event timestamp.
     /// </summary>
     public required DateTime Timestamp { get; init; }
+
+    /// <summary>
+    /// Status with the error details.
+    /// </summary>
+    public required Status Status { get; init; }
 }

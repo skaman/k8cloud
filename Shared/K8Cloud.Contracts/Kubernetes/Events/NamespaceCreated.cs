@@ -1,11 +1,12 @@
-﻿using K8Cloud.Contracts.Kubernetes.Data;
+﻿using K8Cloud.Contracts.Interfaces;
+using K8Cloud.Contracts.Kubernetes.Data;
 
 namespace K8Cloud.Contracts.Kubernetes.Events;
 
 /// <summary>
 /// Namespace created event.
 /// </summary>
-public record NamespaceCreated
+public record NamespaceCreated : IEventWithResource<NamespaceResource>, ITimestamp
 {
     /// <summary>
     /// Namespace resource.

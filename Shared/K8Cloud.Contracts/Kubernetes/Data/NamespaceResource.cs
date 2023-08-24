@@ -1,9 +1,11 @@
-﻿namespace K8Cloud.Contracts.Kubernetes.Data;
+﻿using K8Cloud.Contracts.Interfaces;
+
+namespace K8Cloud.Contracts.Kubernetes.Data;
 
 /// <summary>
 /// Namespace resource.
 /// </summary>
-public record NamespaceResource : NamespaceData
+public record NamespaceResource : NamespaceData, IResource
 {
     /// <summary>
     /// Resource ID.
