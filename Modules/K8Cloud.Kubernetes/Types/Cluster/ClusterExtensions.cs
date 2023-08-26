@@ -16,10 +16,10 @@ internal class ClusterExtensions
     /// <param name="logger">Logger.</param>
     /// <param name="kubernetesService">Kubernetes service.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    public async Task<ClusterResourceStatus?> GetStatus(
+    public async Task<ClusterStatus?> GetStatus(
         [Parent] ClusterResource clusterRecord,
         [Service] ILogger<ClusterExtensions> logger,
-        [Service] KubernetesService kubernetesService,
+        [Service] IKubernetesService kubernetesService,
         CancellationToken cancellationToken
     )
     {

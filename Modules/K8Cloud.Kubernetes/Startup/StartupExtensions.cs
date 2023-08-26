@@ -26,15 +26,15 @@ public static class StartupExtensions
     {
         // validators
         services.AddScoped<IClusterDataValidator, ClusterDataValidator>();
-        services.AddScoped<NamespaceDataValidator>();
+        services.AddScoped<INamespaceDataValidator, NamespaceDataValidator>();
 
         // other scoped services
-        services.AddScoped<KubernetesService>();
+        services.AddScoped<IKubernetesService, KubernetesService>();
         services.AddScoped<IClusterService, ClusterService>();
-        services.AddScoped<NamespaceService>();
+        services.AddScoped<INamespaceService, NamespaceService>();
 
         // singleton services
-        services.AddSingleton<KubernetesClientsService>();
+        services.AddSingleton<IKubernetesClientsService, KubernetesClientsService>();
 
         return services;
     }

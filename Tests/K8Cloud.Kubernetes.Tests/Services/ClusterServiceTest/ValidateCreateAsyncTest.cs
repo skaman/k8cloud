@@ -20,7 +20,6 @@ public class ValidateCreateAsyncTest : IAsyncLifetime, IClassFixture<DatabaseFix
     {
         Services = new ServiceCollection()
             .ConfigureForKubernetesModule(_databaseFixture.GetConnectionString())
-            .AddScoped<IClusterService, ClusterService>()
             .BuildScopedServiceProvider();
 
         return Task.CompletedTask;

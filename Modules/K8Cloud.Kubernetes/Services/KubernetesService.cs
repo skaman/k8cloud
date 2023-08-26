@@ -3,23 +3,22 @@ using K8Cloud.Contracts.Kubernetes.Data;
 using k8s;
 using k8s.Models;
 using Microsoft.Extensions.Caching.Distributed;
-using System.Net;
 using System.Text.Json;
 
 namespace K8Cloud.Kubernetes.Services;
 
-internal class KubernetesService
+internal class KubernetesService : IKubernetesService
 {
     // TODO: move the cache on the query side? graphql have something?
     // TODO: get the cache time from configuration?
     private static TimeSpan ClusterStatusCacheExpiration = TimeSpan.FromSeconds(30);
 
-    private readonly KubernetesClientsService _kubernetesClientsService;
+    private readonly IKubernetesClientsService _kubernetesClientsService;
     private readonly IMapper _mapper;
     private readonly IDistributedCache _cache;
 
     public KubernetesService(
-        KubernetesClientsService kubernetesClientsService,
+        IKubernetesClientsService kubernetesClientsService,
         IMapper mapper,
         IDistributedCache cache
     )
@@ -36,7 +35,7 @@ internal class KubernetesService
     /// <param name="clusterId">Cluster ID.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Cluster status.</returns>
-    public async Task<ClusterResourceStatus> GetStatusAsync(
+    public async Task<ClusterStatus> GetStatusAsync(
         Guid clusterId,
         CancellationToken cancellationToken = default
     )
@@ -46,7 +45,7 @@ internal class KubernetesService
         var cacheValue = await _cache.GetStringAsync(key, cancellationToken).ConfigureAwait(false);
         if (!string.IsNullOrEmpty(cacheValue))
         {
-            var deserializedData = JsonSerializer.Deserialize<ClusterResourceStatus>(cacheValue);
+            var deserializedData = JsonSerializer.Deserialize<ClusterStatus>(cacheValue);
             if (deserializedData != null)
             {
                 return deserializedData;
@@ -60,7 +59,7 @@ internal class KubernetesService
             .ConfigureAwait(false);
         var nodes = _mapper.Map<NodeInfo[]>(response.Items);
 
-        var status = new ClusterResourceStatus
+        var status = new ClusterStatus
         {
             IsOperative = !Array.Exists(
                 nodes,
@@ -135,46 +134,6 @@ internal class KubernetesService
         catch (Exception e)
         {
             throw Exceptions.KubernetesException.FromException(e);
-        }
-    }
-
-    public async Task CreateOrUpdateNamespaceAsync(NamespaceResource resource)
-    {
-        // check existing resource for existence and compatibility
-        var needCreate = false;
-        try
-        {
-            var existingResource = await GetNamespaceAsync(resource.ClusterId, resource.Name)
-                .ConfigureAwait(false);
-
-            if (existingResource.Id != resource.Id)
-            {
-                throw new Exceptions.KubernetesException(
-                    new Status
-                    {
-                        Code = HttpStatusCode.Conflict,
-                        Message = "Namespace already exists"
-                    }
-                );
-            }
-        }
-        catch (Exceptions.KubernetesException e)
-        {
-            if (e.Status.Code != HttpStatusCode.NotFound)
-            {
-                throw;
-            }
-
-            needCreate = true;
-        }
-
-        if (needCreate)
-        {
-            await CreateNamespaceAsync(resource).ConfigureAwait(false);
-        }
-        else
-        {
-            await UpdateNamespaceAsync(resource).ConfigureAwait(false);
         }
     }
 }

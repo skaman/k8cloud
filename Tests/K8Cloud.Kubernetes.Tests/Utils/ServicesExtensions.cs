@@ -83,8 +83,6 @@ internal static class ServicesExtensions
             })
             .AddKubernetesModule();
 
-        //services.BuildServiceProvider(true).MigrateDatabase();
-
         return services;
     }
 

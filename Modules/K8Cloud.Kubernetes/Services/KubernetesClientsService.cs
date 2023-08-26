@@ -12,7 +12,7 @@ namespace K8Cloud.Kubernetes.Services;
 /// Keep a local cache with allocated clients to avoid creating a new client for each request.
 /// TODO: need to remove unused clients after a while of inactivity.
 /// </summary>
-internal class KubernetesClientsService
+internal class KubernetesClientsService : IKubernetesClientsService
 {
     private readonly IServiceProvider _serviceProvider;
 

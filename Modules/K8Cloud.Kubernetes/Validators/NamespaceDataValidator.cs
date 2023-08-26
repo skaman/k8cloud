@@ -12,7 +12,7 @@ namespace K8Cloud.Kubernetes.Validators;
 /// <summary>
 /// Namespace data validator.
 /// </summary>
-internal class NamespaceDataValidator : AbstractValidator<NamespaceData>
+internal class NamespaceDataValidator : AbstractValidator<NamespaceData>, INamespaceDataValidator
 {
     public const string NamespaceIdKey = "NamespaceId";
     public const string ClusterIdKey = "ClusterId";

@@ -5,7 +5,6 @@ using K8Cloud.Kubernetes.Entities;
 using K8Cloud.Kubernetes.Extensions;
 using K8Cloud.Kubernetes.Validators;
 using K8Cloud.Shared.Database;
-using k8s.KubeConfigModels;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,13 +16,13 @@ namespace K8Cloud.Kubernetes.Services;
 internal class NamespaceService : INamespaceService
 {
     private readonly K8CloudDbContext _dbContext;
-    private readonly NamespaceDataValidator _namespaceDataValidator;
+    private readonly INamespaceDataValidator _namespaceDataValidator;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
 
     public NamespaceService(
         K8CloudDbContext dbContext,
-        NamespaceDataValidator namespaceDataValidator,
+        INamespaceDataValidator namespaceDataValidator,
         IPublishEndpoint publishEndpoint,
         IMapper mapper
     )

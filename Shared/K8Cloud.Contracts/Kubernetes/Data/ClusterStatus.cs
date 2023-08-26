@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the status of a cluster.
 /// </summary>
-public record ClusterResourceStatus
+public record ClusterStatus
 {
     /// <summary>
     /// The cluster is ready.

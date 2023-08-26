@@ -31,7 +31,6 @@ public class UpdateAsyncTest : IAsyncLifetime, IClassFixture<DatabaseFixture>
     {
         _services = new ServiceCollection()
             .ConfigureForKubernetesModule(_databaseFixture.GetConnectionString())
-            .AddScoped<IClusterService, ClusterService>()
             .BuildScopedServiceProvider();
 
         var mapper = _services.GetRequiredService<IMapper>();

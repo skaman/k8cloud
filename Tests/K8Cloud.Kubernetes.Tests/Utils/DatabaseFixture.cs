@@ -3,26 +3,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
 using System.Data.Common;
+using Testcontainers.PostgreSql;
 
 namespace K8Cloud.Kubernetes.Tests.Utils;
 
 public class DatabaseFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlDatabase _db = new();
+    protected readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder().Build();
 
     private Respawner _respawner = default!;
     private DbConnection _dbConnection = default!;
 
     public async Task InitializeAsync()
     {
-        await _db.StartAsync();
+        await _postgreSqlContainer.StartAsync();
 
         new ServiceCollection()
-            .AddTestDatabase(_db.GetConnectionString())
+            .AddTestDatabase(_postgreSqlContainer.GetConnectionString())
             .BuildServiceProvider(true)
             .MigrateDatabase();
 
-        _dbConnection = new NpgsqlConnection(_db.GetConnectionString());
+        _dbConnection = new NpgsqlConnection(_postgreSqlContainer.GetConnectionString());
         await _dbConnection.OpenAsync();
         _respawner = await Respawner.CreateAsync(
             _dbConnection,
@@ -34,7 +35,7 @@ public class DatabaseFixture : IAsyncLifetime
         );
     }
 
-    public string GetConnectionString() => _db.GetConnectionString();
+    public string GetConnectionString() => _postgreSqlContainer.GetConnectionString();
 
     public Task Reset()
     {
@@ -43,6 +44,6 @@ public class DatabaseFixture : IAsyncLifetime
 
     public Task DisposeAsync()
     {
-        return _db.DisposeAsync();
+        return _postgreSqlContainer.DisposeAsync().AsTask();
     }
 }

@@ -26,7 +26,7 @@ internal static class NamespaceMutation
         Guid clusterId,
         NamespaceData data,
         K8CloudDbContext dbContext,
-        [Service] NamespaceService namespaceService,
+        [Service] INamespaceService namespaceService,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
     )
@@ -54,7 +54,7 @@ internal static class NamespaceMutation
     public static Task<FluentValidation.Results.ValidationResult> ValidateCreateNamespaceAsync(
         Guid clusterId,
         NamespaceData data,
-        [Service] NamespaceService namespaceService,
+        [Service] INamespaceService namespaceService,
         CancellationToken cancellationToken
     )
     {
@@ -80,7 +80,7 @@ internal static class NamespaceMutation
         NamespaceData data,
         string version,
         K8CloudDbContext dbContext,
-        [Service] NamespaceService namespaceService,
+        [Service] INamespaceService namespaceService,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
     )
@@ -110,7 +110,7 @@ internal static class NamespaceMutation
         Guid clusterId,
         Guid namespaceId,
         NamespaceData data,
-        [Service] NamespaceService namespaceService,
+        [Service] INamespaceService namespaceService,
         CancellationToken cancellationToken
     )
     {
@@ -136,7 +136,7 @@ internal static class NamespaceMutation
         Guid clusterId,
         Guid namespaceId,
         K8CloudDbContext dbContext,
-        [Service] NamespaceService namespaceService,
+        [Service] INamespaceService namespaceService,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
     )

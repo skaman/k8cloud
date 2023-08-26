@@ -30,7 +30,6 @@ public class DeleteAsyncTest : IAsyncLifetime, IClassFixture<DatabaseFixture>
     {
         Services = new ServiceCollection()
             .ConfigureForKubernetesModule(_databaseFixture.GetConnectionString())
-            .AddScoped<IClusterService, ClusterService>()
             .BuildScopedServiceProvider();
 
         var mapper = Services.GetRequiredService<IMapper>();
