@@ -53,6 +53,7 @@ public static class StartupExtensions
     {
         var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<K8CloudDbContext>();
+        var tmp = dbContext.Database.GetMigrations();
         dbContext.Database.Migrate();
     }
 

@@ -9,7 +9,6 @@ using K8Cloud.Shared.Database;
 using MassTransit;
 using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace K8Cloud.Kubernetes.Startup;
@@ -23,23 +22,21 @@ public static class StartupExtensions
     /// Registers the kubernetes module.
     /// </summary>
     /// <param name="services">Services collection.</param>
-    /// <param name="configuration">Configuration.</param>
-    public static void AddKubernetesModule(
-        this IServiceCollection services,
-        IConfiguration configuration
-    )
+    public static IServiceCollection AddKubernetesModule(this IServiceCollection services)
     {
         // validators
-        services.AddScoped<ClusterDataValidator>();
+        services.AddScoped<IClusterDataValidator, ClusterDataValidator>();
         services.AddScoped<NamespaceDataValidator>();
 
         // other scoped services
         services.AddScoped<KubernetesService>();
-        services.AddScoped<ClusterService>();
+        services.AddScoped<IClusterService, ClusterService>();
         services.AddScoped<NamespaceService>();
 
         // singleton services
         services.AddSingleton<KubernetesClientsService>();
+
+        return services;
     }
 
     /// <summary>

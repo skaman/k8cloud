@@ -71,7 +71,7 @@ builder.Services.AddMassTransit(busConfigurator =>
 
 // Add the services.
 builder.Services.AddSharedServices();
-builder.Services.AddKubernetesModule(builder.Configuration);
+builder.Services.AddKubernetesModule();
 
 // Add the database.
 builder.Services.AddK8CloudDatabase(

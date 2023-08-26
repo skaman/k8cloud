@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using MassTransit.EntityFrameworkCoreIntegration;
 using Microsoft.EntityFrameworkCore;
 
 namespace K8Cloud.Shared.Database;
@@ -19,7 +20,8 @@ public class K8CloudDbContext : DbContext
     /// Initializes a new instance of the <see cref="K8CloudDbContext"/> class.
     /// </summary>
     /// <param name="options">DB conctext options.</param>
-    public K8CloudDbContext(DbContextOptions<K8CloudDbContext> options) : base(options) { }
+    public K8CloudDbContext(DbContextOptions<K8CloudDbContext> options)
+        : base(options) { }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,6 +33,11 @@ public class K8CloudDbContext : DbContext
         modelBuilder.AddInboxStateEntity();
         modelBuilder.AddOutboxMessageEntity();
         modelBuilder.AddOutboxStateEntity();
+    }
+
+    public void SetEntityVersion(object entity, uint version)
+    {
+        Entry(entity).OriginalValues["Version"] = version;
     }
 
     /// <inheritdoc />

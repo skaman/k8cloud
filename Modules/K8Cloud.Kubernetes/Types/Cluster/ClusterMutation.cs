@@ -24,7 +24,7 @@ internal static class ClusterMutation
     public static async Task<ClusterResource> CreateClusterAsync(
         ClusterData data,
         K8CloudDbContext dbContext,
-        [Service] ClusterService clusterService,
+        [Service] IClusterService clusterService,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
     )
@@ -50,7 +50,7 @@ internal static class ClusterMutation
     /// <returns>Validation data.</returns>
     public static Task<FluentValidation.Results.ValidationResult> ValidateCreateClusterAsync(
         ClusterData data,
-        [Service] ClusterService clusterService,
+        [Service] IClusterService clusterService,
         CancellationToken cancellationToken
     )
     {
@@ -74,7 +74,7 @@ internal static class ClusterMutation
         ClusterData data,
         string version,
         K8CloudDbContext dbContext,
-        [Service] ClusterService clusterService,
+        [Service] IClusterService clusterService,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
     )
@@ -102,7 +102,7 @@ internal static class ClusterMutation
     public static Task<FluentValidation.Results.ValidationResult> ValidateUpdateClusterAsync(
         Guid clusterId,
         ClusterData data,
-        [Service] ClusterService clusterService,
+        [Service] IClusterService clusterService,
         CancellationToken cancellationToken
     )
     {
@@ -121,7 +121,7 @@ internal static class ClusterMutation
     public static async Task<ClusterResource> DeleteClusterAsync(
         Guid clusterId,
         K8CloudDbContext dbContext,
-        [Service] ClusterService clusterService,
+        [Service] IClusterService clusterService,
         [Service] IMapper mapper,
         CancellationToken cancellationToken
     )

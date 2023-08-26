@@ -21,8 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Server", "K8Cloud.S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DFCB8C96-C077-4008-9881-7D2874BEF978}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4860F319-E118-4487-816C-A55D29D268D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "K8Cloud.Kubernetes.Tests", "Tests\K8Cloud.Kubernetes.Tests\K8Cloud.Kubernetes.Tests.csproj", "{2912E361-27CE-4C3A-8871-C763237AFD43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +59,10 @@ Global
 		{AED3547A-529A-4334-974F-63BED49EB4F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AED3547A-529A-4334-974F-63BED49EB4F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AED3547A-529A-4334-974F-63BED49EB4F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2912E361-27CE-4C3A-8871-C763237AFD43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2912E361-27CE-4C3A-8871-C763237AFD43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2912E361-27CE-4C3A-8871-C763237AFD43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2912E361-27CE-4C3A-8871-C763237AFD43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +71,7 @@ Global
 		{C655AD18-9CE6-4C64-AC2B-647DD2EA5948} = {3B7328FE-190F-428A-9B3E-A0DE4F7C6F2D}
 		{1331199D-F480-44A1-83B2-983A5AFB9E71} = {29790E01-19FC-48EB-9139-B056847B2A80}
 		{6CF44410-26FA-4067-8BD5-03055F66FAC1} = {29790E01-19FC-48EB-9139-B056847B2A80}
+		{2912E361-27CE-4C3A-8871-C763237AFD43} = {4860F319-E118-4487-816C-A55D29D268D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8782E0B-E3DF-4EEC-B816-E5CC37165B97}

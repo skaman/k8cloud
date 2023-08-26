@@ -12,7 +12,7 @@ namespace K8Cloud.Kubernetes.Validators;
 /// <summary>
 /// Cluster data validator.
 /// </summary>
-internal class ClusterDataValidator : AbstractValidator<ClusterData>
+internal class ClusterDataValidator : AbstractValidator<ClusterData>, IClusterDataValidator
 {
     private const string ClusterIdKey = "ClusterId";
 

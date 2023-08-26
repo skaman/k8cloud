@@ -1,0 +1,76 @@
+﻿using AutoMapper;
+using K8Cloud.Kubernetes.Entities;
+using K8Cloud.Kubernetes.Services;
+using K8Cloud.Kubernetes.Tests.Utils;
+using K8Cloud.Shared.Database;
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace K8Cloud.Kubernetes.Tests.Services.NamespaceServiceTest;
+
+public class ValidateUpdateAsyncTest : IAsyncLifetime, IClassFixture<DatabaseFixture>
+{
+    private readonly DatabaseFixture _databaseFixture;
+
+    public ValidateUpdateAsyncTest(DatabaseFixture fixture)
+    {
+        _databaseFixture = fixture;
+    }
+
+    private IServiceProvider Services { get; set; } = default!;
+    private INamespaceService NamespaceService => Services.GetRequiredService<INamespaceService>();
+    private K8CloudDbContext DbContext => Services.GetRequiredService<K8CloudDbContext>();
+    private ClusterEntity ClusterRecord { get; set; } = default!;
+    private NamespaceEntity OriginalRecord { get; set; } = default!;
+
+    public async Task InitializeAsync()
+    {
+        Services = new ServiceCollection()
+            .ConfigureForKubernetesModule(_databaseFixture.GetConnectionString())
+            .AddScoped<INamespaceService, NamespaceService>()
+            .BuildScopedServiceProvider();
+
+        var mapper = Services.GetRequiredService<IMapper>();
+
+        ClusterRecord = mapper.Map<ClusterEntity>(Data.ValidClusterData);
+        ClusterRecord.Id = NewId.NextGuid();
+
+        OriginalRecord = mapper.Map<NamespaceEntity>(Data.ValidNamespaceData);
+        OriginalRecord.Id = NewId.NextGuid();
+        OriginalRecord.ClusterId = ClusterRecord.Id;
+
+        await DbContext.Set<ClusterEntity>().AddAsync(ClusterRecord);
+        await DbContext.Set<NamespaceEntity>().AddAsync(OriginalRecord);
+        await DbContext.SaveChangesAsync();
+    }
+
+    public Task DisposeAsync() => _databaseFixture.Reset();
+
+    [Fact]
+    public async Task T001_should_return_a_valid_result_with_valid_data()
+    {
+        // act
+        var result = await NamespaceService.ValidateUpdateAsync(
+            ClusterRecord.Id,
+            OriginalRecord.Id,
+            Data.ValidNamespaceData2
+        );
+
+        // asserts
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public async Task T002_should_return_an_invalid_result_with_invalid_data()
+    {
+        // act
+        var result = await NamespaceService.ValidateUpdateAsync(
+            ClusterRecord.Id,
+            OriginalRecord.Id,
+            Data.InvalidNamespaceData
+        );
+
+        // asserts
+        Assert.False(result.IsValid);
+    }
+}

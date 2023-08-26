@@ -5,24 +5,26 @@ using K8Cloud.Kubernetes.Entities;
 using K8Cloud.Kubernetes.Extensions;
 using K8Cloud.Kubernetes.Validators;
 using K8Cloud.Shared.Database;
+using k8s.KubeConfigModels;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
 
 namespace K8Cloud.Kubernetes.Services;
 
 /// <summary>
 /// Manages the clusters.
 /// </summary>
-internal class ClusterService
+internal class ClusterService : IClusterService
 {
     private readonly K8CloudDbContext _dbContext;
-    private readonly ClusterDataValidator _clusterDataValidator;
+    private readonly IClusterDataValidator _clusterDataValidator;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IMapper _mapper;
 
     public ClusterService(
         K8CloudDbContext dbContext,
-        ClusterDataValidator clusterDataValidator,
+        IClusterDataValidator clusterDataValidator,
         IPublishEndpoint publishEndpoint,
         IMapper mapper
     )
@@ -127,8 +129,8 @@ internal class ClusterService
             .SingleAsync(x => x.Id == clusterId, cancellationToken)
             .ConfigureAwait(false);
         _mapper.Map(data, cluster);
-        cluster.Version = uint.Parse(version);
 
+        _dbContext.SetEntityVersion(cluster, uint.Parse(version));
         _dbContext.Update(cluster);
 
         // save for retrieve version and dates

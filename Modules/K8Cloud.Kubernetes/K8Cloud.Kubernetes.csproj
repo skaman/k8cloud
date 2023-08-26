@@ -12,6 +12,11 @@
   </PropertyGroup>
 	
   <ItemGroup>
+    <InternalsVisibleTo Include="K8Cloud.Kubernetes.Tests" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+	
+  <ItemGroup>
     <PackageReference Include="HotChocolate.Types.Analyzers" Version="13.5.1" />
     <PackageReference Include="KubernetesClient" Version="11.0.44" />
   </ItemGroup>

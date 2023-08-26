@@ -5,6 +5,7 @@ using K8Cloud.Kubernetes.Entities;
 using K8Cloud.Kubernetes.Extensions;
 using K8Cloud.Kubernetes.Validators;
 using K8Cloud.Shared.Database;
+using k8s.KubeConfigModels;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ namespace K8Cloud.Kubernetes.Services;
 /// <summary>
 /// Manages the namespaces.
 /// </summary>
-internal class NamespaceService
+internal class NamespaceService : INamespaceService
 {
     private readonly K8CloudDbContext _dbContext;
     private readonly NamespaceDataValidator _namespaceDataValidator;
@@ -137,8 +138,8 @@ internal class NamespaceService
             .SingleAsync(x => x.Id == namespaceId && x.ClusterId == clusterId, cancellationToken)
             .ConfigureAwait(false);
         _mapper.Map(data, @namespace);
-        @namespace.Version = uint.Parse(version);
 
+        _dbContext.SetEntityVersion(@namespace, uint.Parse(version));
         _dbContext.Update(@namespace);
 
         // save for retrieve version and dates
@@ -147,7 +148,7 @@ internal class NamespaceService
         // publish the event
         await _publishEndpoint
             .Publish(
-                new NamespaceCreated
+                new NamespaceUpdated
                 {
                     Resource = _mapper.Map<NamespaceResource>(@namespace),
                     Timestamp = DateTime.UtcNow
