@@ -1,6 +1,6 @@
 using HotChocolate.Data;
 using HotChocolate.Types.Pagination;
-using K8Cloud.Kubernetes.Startup;
+using K8Cloud.Cluster.Startup;
 using K8Cloud.Shared.Database;
 using K8Cloud.Shared.GraphQL;
 using K8Cloud.Shared.Startup;
@@ -71,7 +71,7 @@ builder.Services.AddMassTransit(busConfigurator =>
 
 // Add the services.
 builder.Services.AddSharedServices();
-builder.Services.AddKubernetesModule();
+builder.Services.AddClusterModule();
 
 // Add the database.
 builder.Services.AddK8CloudDatabase(
@@ -110,7 +110,7 @@ builder.Services
     .AddFiltering<ExtendedFilteringConvention>()
     .AddSorting()
     .AddSharedTypes()
-    .AddKubernetesTypes();
+    .AddClusterTypes();
 
 var app = builder.Build();
 

@@ -19,7 +19,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\K8Cloud.Web\K8Cloud.Web.csproj" />
+    <ProjectReference Include="..\Modules\K8Cloud.Cluster\K8Cloud.Cluster.csproj" />
     <ProjectReference Include="..\Modules\K8Cloud.Kubernetes\K8Cloud.Kubernetes.csproj" />
+    <ProjectReference Include="..\Shared\K8Cloud.Contracts\K8Cloud.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

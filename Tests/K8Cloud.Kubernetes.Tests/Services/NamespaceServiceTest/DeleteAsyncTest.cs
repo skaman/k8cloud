@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using K8Cloud.Contracts.Kubernetes.Events;
-using K8Cloud.Kubernetes.Entities;
-using K8Cloud.Kubernetes.Services;
+using K8Cloud.Cluster.Entities;
+using K8Cloud.Cluster.Services;
 using K8Cloud.Kubernetes.Tests.Utils;
 using K8Cloud.Shared.Database;
 using MassTransit;

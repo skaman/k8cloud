@@ -1,4 +1,5 @@
 ﻿using K8Cloud.Contracts.Kubernetes.Data;
+using k8s.KubeConfigModels;
 
 namespace K8Cloud.Kubernetes.Tests.Utils;
 
@@ -54,4 +55,39 @@ public static class Data
     public static NamespaceData ValidNamespaceData2 = new() { Name = "test2" };
 
     public static NamespaceData InvalidNamespaceData = new() { Name = "" };
+
+    public static Guid ClusterId = Guid.NewGuid();
+
+    public static NamespaceResource ValidNamespaceResource =
+        new()
+        {
+            Id = Guid.NewGuid(),
+            ClusterId = ClusterId,
+            Name = "test",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Version = "11"
+        };
+
+    public static NamespaceResource ValidNamespaceResource2 =
+        new()
+        {
+            Id = Guid.NewGuid(),
+            ClusterId = ClusterId,
+            Name = "test",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Version = "12"
+        };
+
+    public static NamespaceResource InvalidNamespaceResource =
+        new()
+        {
+            Id = Guid.NewGuid(),
+            ClusterId = ClusterId,
+            Name = "****",
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            Version = "11"
+        };
 }

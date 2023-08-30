@@ -1,4 +1,4 @@
-﻿using K8Cloud.Kubernetes.Services;
+﻿using K8Cloud.Cluster.Services;
 using K8Cloud.Kubernetes.Tests.Utils;
 using Microsoft.Extensions.DependencyInjection;
 

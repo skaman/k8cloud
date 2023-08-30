@@ -1,4 +1,4 @@
-﻿using K8Cloud.Kubernetes.Startup;
+﻿using K8Cloud.Cluster.Startup;
 using K8Cloud.Shared.Startup;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -74,14 +74,21 @@ internal static class ServicesExtensions
         string connectionString
     )
     {
+        services.AddTestDatabase(connectionString).ConfigureForKubernetesModule();
+
+        return services;
+    }
+
+    public static IServiceCollection ConfigureForKubernetesModule(this IServiceCollection services)
+    {
         services
-            .AddTestDatabase(connectionString)
             .AddTestMassTransit()
+            .AddDistributedMemoryCache()
             .AddAutoMapper(config =>
             {
                 config.ConfigureKubernetesAutoMapper();
             })
-            .AddKubernetesModule();
+            .AddClusterModule();
 
         return services;
     }

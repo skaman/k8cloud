@@ -2,6 +2,7 @@
 using k8s.Autorest;
 using k8s.KubeConfigModels;
 using k8s.Models;
+using System.Text.Json;
 
 //var config = KubernetesClientConfiguration.BuildConfigFromConfigFile();
 var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(
@@ -52,7 +53,7 @@ var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(
 );
 var client = new K8Cloud.Test.Kubernetes(config);
 
-var nodes = await client.CoreV1.ListNodeAsync();
+//var nodes = await client.CoreV1.ListNodeAsync();
 
 //Console.WriteLine(
 //    JsonSerializer.Serialize(nodes, new JsonSerializerOptions { WriteIndented = true })
@@ -63,10 +64,10 @@ var nodes = await client.CoreV1.ListNodeAsync();
 //}
 //
 
-var labels = new Dictionary<string, string>
-{
-    { "k8cloud.io/metadata.id", Guid.NewGuid().ToString() }
-};
+//var labels = new Dictionary<string, string>
+//{
+//    { "k8cloud.io/metadata.id", Guid.NewGuid().ToString() }
+//};
 
 //var znamespace = await client.CoreV1.CreateNamespaceAsync(
 //    new V1Namespace
@@ -74,30 +75,59 @@ var labels = new Dictionary<string, string>
 //        Metadata = new V1ObjectMeta { Name = "test3", Labels = labels }
 //    }
 //);
-try
-{
-    var res = await client.CoreV1.ReadNamespaceAsync("test3");
-}
-catch (HttpOperationException e)
-{
-    var returnMessage = KubernetesJson.Deserialize<V1Status>(e.Response.Content);
-    Console.WriteLine(e.Message);
-    Console.WriteLine(e.Response.StatusCode);
-}
-catch (KubernetesException e)
-{
-    Console.WriteLine(e.Message);
-}
-catch (Exception e)
-{
-    Console.WriteLine(e.Message);
-}
-
-var pods = await client.CoreV1.ListNamespaceAsync();
-foreach (var pod in pods.Items)
-{
-    Console.WriteLine(pod.Metadata.Name);
-}
+//try
+//{
+//    var res = await client.CoreV1.ReadNamespaceAsync("test3");
+//}
+//catch (HttpOperationException e)
+//{
+//    var returnMessage = KubernetesJson.Deserialize<V1Status>(e.Response.Content);
+//    Console.WriteLine(e.Message);
+//    Console.WriteLine(e.Response.StatusCode);
+//}
+//catch (KubernetesException e)
+//{
+//    Console.WriteLine(e.Message);
+//}
+//catch (Exception e)
+//{
+//    Console.WriteLine(e.Message);
+//}
+//
+//var pods = await client.CoreV1.ListNamespaceAsync();
+//foreach (var pod in pods.Items)
+//{
+//    Console.WriteLine(pod.Metadata.Name);
+//}
 //
 //var isHealth = await client.IsHealth();
 //Console.WriteLine(isHealth);
+
+//var podlistResp = client.CoreV1.ListPodForAllNamespacesWithHttpMessagesAsync(watch: true);
+//
+//// C# 8 required https://docs.microsoft.com/en-us/archive/msdn-magazine/2019/november/csharp-iterating-with-async-enumerables-in-csharp-8
+//await foreach (var (type, item) in podlistResp.WatchAsync<V1Pod, V1PodList>())
+//{
+//    Console.WriteLine("==on watch event==");
+//    Console.WriteLine(type);
+//    Console.WriteLine(item.Metadata.Name);
+//    Console.WriteLine("==on watch event==");
+//}
+
+
+
+var response = client.CoreV1.ListNamespaceWithHttpMessagesAsync(
+    watch: true,
+    allowWatchBookmarks: true
+);
+await foreach (
+    var (type, item) in response.WatchAsync<V1Namespace, V1NamespaceList>(
+        onError: e => Console.WriteLine(e.Message)
+    )
+)
+{
+    Console.WriteLine("==on watch event==");
+    Console.WriteLine(type);
+    Console.WriteLine(JsonSerializer.Serialize(item));
+    Console.WriteLine("==on watch event==");
+}
